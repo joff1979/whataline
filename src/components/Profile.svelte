@@ -23,7 +23,7 @@
     <div class="content">
         <div class="left-content">
             <p class="description ">
-                SCREENWRITER | FILMMAKER | SCRIPT SUPERVISOR
+                SCREENWRITER | FILMMAKER | <br> SCRIPT SUPERVISOR
             </p>
             <div class="social-icons">
                 {#each socialIcons as icon}
