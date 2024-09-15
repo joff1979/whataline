@@ -1,23 +1,28 @@
 <script lang="ts">
-    import About from "./layout/about.svelte";
+    import Header from "./components/Header.svelte";
+    import Profile from "./components/Profile.svelte";
+    import Footer from "./components/Footer.svelte";
 
-	export let name: string;
+	export let name: string = "Katherine Rollinson";
+
 </script>
 
-<header>
-</header>
+<div class="container mx-auto px-4">
+    <Header {name} />
+    
+    <main>
+        <Profile {name} />
+    </main>
 
-
-
-
-<div class="flex items-center">
-	<About/>
+    <Footer />
 </div>
-
-
 
 <style global lang="postcss">
 	@tailwind base;
 	@tailwind components;
 	@tailwind utilities;
+
+	body {
+		@apply bg-white font-sans;
+	}
 </style>
