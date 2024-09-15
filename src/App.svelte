@@ -3,15 +3,15 @@
     import Profile from "./components/Profile.svelte";
     import Footer from "./components/Footer.svelte";
 
-	export let name: string = "Katherine Rollinson";
-
 </script>
 
 <div class="container mx-auto px-4">
-    <Header {name} />
+    <div class="hidden sm:block">
+        <Header />
+    </div>
     
     <main>
-        <Profile {name} />
+        <Profile  />
     </main>
 
     <Footer />

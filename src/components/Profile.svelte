@@ -22,8 +22,8 @@
     <div class="diagonal-background"></div>
     <div class="content">
         <div class="left-content">
-            <p class="description">
-                Screenwriter, script supervisor, and filmmaker.
+            <p class="description ">
+                SCREENWRITER | SCRIPT SUPERVISOR | FILMMAKER
             </p>
             <div class="social-icons">
                 {#each socialIcons as icon}
@@ -119,12 +119,17 @@
         margin-bottom: 1.5rem;
         font-size: 1.375rem; /* Increased from 1.1rem to 1.375rem (25% larger) */
         line-height: 1.3; /* Adjusted line height for better readability */
+        font-family: "Amaranth";
+            font-weight: 400;
+            font-style: normal;
     }
 
     .description {
-        font-size: 1.1rem;
+        font-size: 1.2rem;
         margin-bottom: 1.5rem;
         line-height: 1.6;
+        font-family: "Amaranth";
+        font-style: italic;
     }
 
     .social-icons {
@@ -188,6 +193,62 @@
     .language-toggle button.active {
         background-color: #b3dade;
         color: white;
+    }
+
+    @media (max-width: 768px) {
+        .content {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .left-content, .right-content {
+            max-width: 100%;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .profile-image-container {
+            order: -1;
+            margin-bottom: 2rem;
+        }
+
+        .profile-image {
+            width: 200px;
+            height: 200px;
+        }
+
+        .right-content {
+            order: 0;
+            margin-bottom: 1rem; 
+        }
+
+        .left-content {
+            order: 1;
+            margin-top: 0; 
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem; 
+            font-family: "Amaranth";
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        .description {
+            font-size: 1.2rem;
+            margin-top: 0.5rem; 
+            margin-bottom: 1.5rem;
+        }
+
+        .social-icons {
+            justify-content: center;
+        }
+
+        .social-icons a {
+            width: 36px;
+            height: 36px;
+        }
     }
 </style>
 

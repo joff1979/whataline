@@ -24,6 +24,9 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    font-family: "Amaranth";
+    font-weight: 400;
+    font-style: normal;
   }
 
   p {
