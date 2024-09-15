@@ -40,7 +40,7 @@
         </div>
         <div class="right-content">
             <img src="./images/logo.svg" alt="Logo" class="logo-image">
-            <p class="subtitle">Katherine Rollinson</p>
+            <p class="subtitle">Kat Rollinson</p>
         </div>
     </div>
 </div>
