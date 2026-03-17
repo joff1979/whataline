@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git mv:*)",
+      "Bash(git commit:*)",
+      "Bash(dotnet --version)",
+      "Bash(\"/c/Program Files/dotnet/dotnet.exe\" --version)",
+      "Bash(git add:*)",
+      "Bash(npm --version)",
+      "Bash(npm create:*)",
+      "Bash(npm install:*)",
+      "Bash(npx tailwindcss:*)",
+      "Bash(npm run:*)"
+    ]
+  }
+}
