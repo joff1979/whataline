@@ -10,7 +10,11 @@
       "Bash(npm create:*)",
       "Bash(npm install:*)",
       "Bash(npx tailwindcss:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(dotnet --list-sdks)",
+      "Bash(\"/c/Program Files/dotnet/dotnet.exe\" --list-sdks)",
+      "Bash(\"/c/Program Files/dotnet/dotnet.exe\" restore Whataline.sln)",
+      "Bash(\"/c/Program Files/dotnet/dotnet.exe\" build Whataline.sln)"
     ]
   }
 }

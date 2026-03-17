@@ -65,18 +65,16 @@ builder.Services.AddCors(options =>
     });
 });
 
-// ── MVC / Swagger ─────────────────────────────────────────────────────────────
+// ── MVC / OpenAPI (.NET 10 native) ───────────────────────────────────────────
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
 // ── Middleware pipeline ───────────────────────────────────────────────────────
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.MapOpenApi(); // serves /openapi/v1.json
 }
 
 app.UseHttpsRedirection();
