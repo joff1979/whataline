@@ -14,7 +14,13 @@
       "Bash(dotnet --list-sdks)",
       "Bash(\"/c/Program Files/dotnet/dotnet.exe\" --list-sdks)",
       "Bash(\"/c/Program Files/dotnet/dotnet.exe\" restore Whataline.sln)",
-      "Bash(\"/c/Program Files/dotnet/dotnet.exe\" build Whataline.sln)"
+      "Bash(\"/c/Program Files/dotnet/dotnet.exe\" build Whataline.sln)",
+      "Bash(\"/c/Program Files/dotnet/dotnet.exe\" tool restore)",
+      "Bash(\"/c/Program Files/dotnet/dotnet.exe\" tool list -g)",
+      "Bash(\"/c/Program Files/dotnet/dotnet.exe\" tool install --global dotnet-ef)",
+      "Bash(ASPNETCORE_ENVIRONMENT=Development dotnet-ef database update --project Whataline.Infrastructure --startup-project Whataline.Api)",
+      "Bash(ASPNETCORE_ENVIRONMENT=Development dotnet-ef migrations add InitialCreate --project Whataline.Infrastructure --startup-project Whataline.Api)",
+      "Bash(node_modules/.bin/tsc --noEmit)"
     ]
   }
 }
