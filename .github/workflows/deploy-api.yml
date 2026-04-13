@@ -1,0 +1,39 @@
+name: Deploy API to Azure App Service
+
+on:
+  push:
+    branches:
+      - main
+      - claude/sleepy-lumiere
+    paths:
+      - 'backend/**'
+      - '.github/workflows/deploy-api.yml'
+  workflow_dispatch: # allow manual trigger from GitHub UI
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Restore
+        run: dotnet restore backend/Whataline.sln
+
+      - name: Build
+        run: dotnet build backend/Whataline.sln --configuration Release --no-restore
+
+      - name: Publish
+        run: dotnet publish backend/Whataline.Api/Whataline.Api.csproj --configuration Release --output ./publish --no-restore
+
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: whataline-api
+          publish-profile: ${{ secrets.AZURE_API_PUBLISH_PROFILE }}
+          package: ./publish
