@@ -13,7 +13,8 @@ var sqlConnection = builder.Configuration["AZURE_SQL_CONNECTION_STRING"]
         "AZURE_SQL_CONNECTION_STRING environment variable or ConnectionStrings:AzureSql is required.");
 
 builder.Services.AddDbContext<WhatalineDbContext>(options =>
-    options.UseSqlServer(sqlConnection));
+    options.UseSqlServer(sqlConnection, sql =>
+        sql.EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(10), errorNumbersToAdd: null)));
 
 // ── Blob Storage ──────────────────────────────────────────────────────────────
 var blobConnection = builder.Configuration["AZURE_BLOB_CONNECTION_STRING"]
@@ -77,7 +78,9 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi(); // serves /openapi/v1.json
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+    app.UseHttpsRedirection();
+
 app.UseCors("FrontendPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
@@ -87,8 +90,16 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<WhatalineDbContext>();
-    db.Database.Migrate();
-    await SeedAdminAsync(db, builder.Configuration);
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    try
+    {
+        db.Database.Migrate();
+        await SeedAdminAsync(db, builder.Configuration);
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Database migration/seed failed on startup — API will still start but DB may be unavailable.");
+    }
 }
 
 app.Run();

@@ -20,7 +20,14 @@
       "Bash(\"/c/Program Files/dotnet/dotnet.exe\" tool install --global dotnet-ef)",
       "Bash(ASPNETCORE_ENVIRONMENT=Development dotnet-ef database update --project Whataline.Infrastructure --startup-project Whataline.Api)",
       "Bash(ASPNETCORE_ENVIRONMENT=Development dotnet-ef migrations add InitialCreate --project Whataline.Infrastructure --startup-project Whataline.Api)",
-      "Bash(node_modules/.bin/tsc --noEmit)"
+      "Bash(node_modules/.bin/tsc --noEmit)",
+      "Bash(\"/c/Program Files/dotnet/dotnet.exe\" run --project Whataline.Api)",
+      "Bash(curl -s http://localhost:5000/api/writing)",
+      "Bash(\"/c/Program Files/dotnet/dotnet.exe\" build Whataline.Api)",
+      "Bash(echo \"API PID: $!\")",
+      "Read(//tmp/**)",
+      "Bash(node_modules/.bin/vite --port 5173)",
+      "Bash(echo \"Vite PID: $!\" sleep 5)"
     ]
   }
 }
