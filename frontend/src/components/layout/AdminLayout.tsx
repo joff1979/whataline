@@ -6,7 +6,8 @@ const navItems = [
   { to: '/admin/films',        label: 'Films'        },
   { to: '/admin/services',     label: 'Services'     },
   { to: '/admin/testimonials', label: 'Testimonials' },
-  { to: '/admin/settings',     label: 'Site Settings'},
+  { to: '/admin/contact',      label: 'Inbox'        },
+  { to: '/admin/settings',     label: 'Settings'     },
 ];
 
 export default function AdminLayout() {

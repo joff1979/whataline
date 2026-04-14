@@ -18,6 +18,7 @@ import AdminWriting from './pages/admin/AdminWriting';
 import AdminFilms from './pages/admin/AdminFilms';
 import AdminServices from './pages/admin/AdminServices';
 import AdminTestimonials from './pages/admin/AdminTestimonials';
+import AdminContact  from './pages/admin/AdminContact';
 import AdminSettings from './pages/admin/AdminSettings';
 
 // AnimatePresence needs to read location inside the router
@@ -55,6 +56,7 @@ function AnimatedRoutes() {
             <Route path="films"        element={<AdminFilms />} />
             <Route path="services"     element={<AdminServices />} />
             <Route path="testimonials" element={<AdminTestimonials />} />
+            <Route path="contact"      element={<AdminContact />} />
             <Route path="settings"     element={<AdminSettings />} />
           </Route>
         </Routes>
