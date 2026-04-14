@@ -134,7 +134,7 @@ export default function Contact() {
                       onChange={set('name')}
                       placeholder="Your name"
                       className={inputBase}
-                      style={{ borderColor: 'rgba(62,41,28,0.2)', color: 'var(--color-text-primary)' }}
+                      style={{ borderColor: 'rgba(23,41,41,0.2)', color: 'var(--color-text-primary)' }}
                     />
                   </div>
                   <div className="flex flex-col gap-2">
@@ -153,7 +153,7 @@ export default function Contact() {
                       onChange={set('email')}
                       placeholder="your@email.com"
                       className={inputBase}
-                      style={{ borderColor: 'rgba(62,41,28,0.2)', color: 'var(--color-text-primary)' }}
+                      style={{ borderColor: 'rgba(23,41,41,0.2)', color: 'var(--color-text-primary)' }}
                     />
                   </div>
                 </div>
@@ -174,7 +174,7 @@ export default function Contact() {
                     onChange={set('subject')}
                     placeholder="What's this about?"
                     className={inputBase}
-                    style={{ borderColor: 'rgba(62,41,28,0.2)', color: 'var(--color-text-primary)' }}
+                    style={{ borderColor: 'rgba(23,41,41,0.2)', color: 'var(--color-text-primary)' }}
                   />
                 </div>
 
@@ -195,7 +195,7 @@ export default function Contact() {
                     onChange={set('message')}
                     placeholder="Tell Kat what you have in mind…"
                     className={inputBase + ' resize-none'}
-                    style={{ borderColor: 'rgba(62,41,28,0.2)', color: 'var(--color-text-primary)' }}
+                    style={{ borderColor: 'rgba(23,41,41,0.2)', color: 'var(--color-text-primary)' }}
                   />
                 </div>
 

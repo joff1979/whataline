@@ -5,11 +5,11 @@ import type { WritingProject } from '../../api/types';
 
 // ── Format badge colours ───────────────────────────────────────────────────────
 const formatColour: Record<string, string> = {
-  feature:  '#C1603A',
-  short:    '#7A6E63',
-  pilot:    '#3D6B5E',
-  series:   '#3D6B5E',
-  default:  '#7A6E63',
+  feature:  '#B8756A',
+  short:    '#5A8080',
+  pilot:    '#2D5C5C',
+  series:   '#2D5C5C',
+  default:  '#5A8080',
 };
 
 function formatBg(format: string | null) {
@@ -22,10 +22,10 @@ function formatBg(format: string | null) {
 // ── Skeleton ───────────────────────────────────────────────────────────────────
 function SkeletonRow() {
   return (
-    <div className="animate-pulse py-8 border-b" style={{ borderColor: 'rgba(62,41,28,0.1)' }}>
-      <div className="h-3 w-16 rounded-full mb-3" style={{ background: 'rgba(62,41,28,0.12)' }} />
-      <div className="h-6 w-1/3 mb-2" style={{ background: 'rgba(62,41,28,0.12)' }} />
-      <div className="h-4 w-2/3" style={{ background: 'rgba(62,41,28,0.08)' }} />
+    <div className="animate-pulse py-8 border-b" style={{ borderColor: 'rgba(23,41,41,0.1)' }}>
+      <div className="h-3 w-16 rounded-full mb-3" style={{ background: 'rgba(23,41,41,0.12)' }} />
+      <div className="h-6 w-1/3 mb-2" style={{ background: 'rgba(23,41,41,0.12)' }} />
+      <div className="h-4 w-2/3" style={{ background: 'rgba(23,41,41,0.08)' }} />
     </div>
   );
 }
@@ -40,7 +40,7 @@ function ScriptCard({ project, index }: { project: WritingProject; index: number
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: index * 0.05 }}
       className="py-8 border-b group"
-      style={{ borderColor: 'rgba(62,41,28,0.1)' }}
+      style={{ borderColor: 'rgba(23,41,41,0.1)' }}
     >
       {/* Top row: format + genre + awards */}
       <div className="flex flex-wrap items-center gap-2 mb-3">
@@ -207,7 +207,7 @@ export default function Writing() {
       {!loading && formats.length > 2 && (
         <section
           className="py-6 px-6 sticky top-[64px] z-30"
-          style={{ background: 'rgba(250,247,242,0.95)', backdropFilter: 'blur(8px)', borderBottom: '1px solid rgba(62,41,28,0.08)' }}
+          style={{ background: 'rgba(250,247,242,0.95)', backdropFilter: 'blur(8px)', borderBottom: '1px solid rgba(23,41,41,0.08)' }}
         >
           <div className="container mx-auto flex flex-wrap gap-2">
             {formats.map(f => (
@@ -218,7 +218,7 @@ export default function Writing() {
                 style={
                   filter === f
                     ? { background: 'var(--color-accent)', color: 'white' }
-                    : { border: '1px solid rgba(62,41,28,0.2)', color: 'var(--color-text-secondary)' }
+                    : { border: '1px solid rgba(23,41,41,0.2)', color: 'var(--color-text-secondary)' }
                 }
               >
                 {f}

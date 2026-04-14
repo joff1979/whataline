@@ -52,7 +52,7 @@ function PosterCard({ project }: { project: FilmProject }) {
             <div
               className="w-full h-full flex items-center justify-center font-display italic text-6xl"
               style={{
-                background: 'linear-gradient(160deg, #251E18, #7A6E63 60%, #C1603A)',
+                background: 'linear-gradient(160deg, #172929, #3D6B6B 60%, #B8756A)',
                 color: 'rgba(255,255,255,0.15)',
               }}
             >
@@ -62,7 +62,7 @@ function PosterCard({ project }: { project: FilmProject }) {
 
           <div
             className="absolute inset-0 flex flex-col justify-end p-5 poster-overlay"
-            style={{ background: 'linear-gradient(to top, rgba(26,20,16,0.95) 0%, rgba(26,20,16,0) 60%)' }}
+            style={{ background: 'linear-gradient(to top, rgba(23,41,41,0.95) 0%, rgba(23,41,41,0) 60%)' }}
           >
             <div className="font-display text-xl font-semibold" style={{ color: 'var(--color-text-inverse)' }}>
               {project.title}

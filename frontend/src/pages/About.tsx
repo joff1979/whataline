@@ -250,7 +250,7 @@ export default function About() {
       <section className="section px-6" style={{ background: 'var(--color-bg-cream)' }}>
         <div className="container mx-auto max-w-3xl">
           <motion.div {...fadeUp(0)} className="eyebrow">Education &amp; Training</motion.div>
-          <div className="mt-8 divide-y" style={{ borderColor: 'rgba(62,41,28,0.1)' }}>
+          <div className="mt-8 divide-y" style={{ borderColor: 'rgba(23,41,41,0.1)' }}>
             {education.map(({ school, course, year }, i) => (
               <motion.div
                 key={school + course}

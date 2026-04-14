@@ -115,7 +115,7 @@ export default function Home() {
       exit={{ opacity: 0, transition: { duration: 0.2 } }}
     >
       {/* ── Video Hero ──────────────────────────────────────────────────────── */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden bg-[#1A1410]">
+      <section className="relative h-screen flex items-center justify-center overflow-hidden bg-[#172929]">
 
         {/* YouTube iframe — stretched & centred, pointer-events off */}
         <div
@@ -141,7 +141,7 @@ export default function Home() {
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              'linear-gradient(to bottom, rgba(26,20,16,0.45) 0%, rgba(26,20,16,0.55) 60%, rgba(26,20,16,0.75) 100%)',
+              'linear-gradient(to bottom, rgba(23,41,41,0.45) 0%, rgba(23,41,41,0.55) 60%, rgba(23,41,41,0.75) 100%)',
           }}
         />
 
