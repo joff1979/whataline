@@ -32,7 +32,6 @@ function SkeletonRow() {
 
 // ── Script card ────────────────────────────────────────────────────────────────
 function ScriptCard({ project, index }: { project: WritingProject; index: number }) {
-  const [expanded, setExpanded] = useState(false);
 
   return (
     <motion.article
