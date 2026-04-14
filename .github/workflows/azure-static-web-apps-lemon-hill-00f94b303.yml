@@ -32,7 +32,7 @@ jobs:
           app_location: "frontend"
           output_location: "dist"
         env:
-          VITE_API_BASE_URL: https://whataline-api.azurewebsites.net
+          VITE_API_BASE_URL: https://whataline-api-agbga9h5abgdd9ap.northeurope-01.azurewebsites.net
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
