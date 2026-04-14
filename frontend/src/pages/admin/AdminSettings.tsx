@@ -5,7 +5,7 @@ type Status = 'idle' | 'saving' | 'success' | 'error';
 
 const inputClass =
   'w-full border px-3 py-2 font-body text-sm outline-none rounded-none transition-colors duration-200 focus:border-[--color-accent]';
-const inputStyle = { borderColor: 'rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.05)', color: 'var(--color-text-inverse)' };
+const inputStyle = { borderColor: 'rgba(255,255,255,0.2)', background: 'rgba(0,0,0,0.3)', color: 'rgba(250,247,242,0.9)' };
 const labelClass = 'block font-body text-[11px] tracking-[0.18em] uppercase mb-1.5';
 const labelStyle = { color: 'var(--color-text-muted)' };
 
