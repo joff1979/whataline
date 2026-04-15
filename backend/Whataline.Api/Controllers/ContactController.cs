@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Whataline.Core.Entities;
 using Whataline.Infrastructure.Data;
+using Whataline.Infrastructure.Email;
 
 namespace Whataline.Api.Controllers;
 
@@ -13,8 +14,15 @@ namespace Whataline.Api.Controllers;
 public class ContactController : ControllerBase
 {
     private readonly WhatalineDbContext _db;
+    private readonly IEmailService _email;
+    private readonly ILogger<ContactController> _logger;
 
-    public ContactController(WhatalineDbContext db) => _db = db;
+    public ContactController(WhatalineDbContext db, IEmailService email, ILogger<ContactController> logger)
+    {
+        _db     = db;
+        _email  = email;
+        _logger = logger;
+    }
 
     // POST /api/contact
     [HttpPost]
@@ -22,14 +30,25 @@ public class ContactController : ControllerBase
     {
         var submission = new ContactSubmission
         {
-            Name = request.Name,
-            Email = request.Email,
+            Name    = request.Name,
+            Email   = request.Email,
             Subject = request.Subject,
             Message = request.Message
         };
 
         _db.ContactSubmissions.Add(submission);
         await _db.SaveChangesAsync();
+
+        // Fire notification — failure never surfaces to the visitor
+        try
+        {
+            await _email.SendContactNotificationAsync(
+                request.Name, request.Email, request.Subject, request.Message);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Contact notification email failed for submission {Id}", submission.Id);
+        }
 
         return Ok(new { message = "Thank you — your message has been received." });
     }

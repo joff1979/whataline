@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Whataline.Infrastructure.Data;
+using Whataline.Infrastructure.Email;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +52,22 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAuthorization();
+
+// ── Email ─────────────────────────────────────────────────────────────────────
+var emailSettings = new EmailSettings(
+    SmtpHost: builder.Configuration["EMAIL_SMTP_HOST"]    ?? builder.Configuration["Email:SmtpHost"] ?? string.Empty,
+    SmtpPort: int.TryParse(builder.Configuration["EMAIL_SMTP_PORT"] ?? builder.Configuration["Email:SmtpPort"], out var port) ? port : 587,
+    Username: builder.Configuration["EMAIL_SMTP_USERNAME"] ?? builder.Configuration["Email:Username"] ?? string.Empty,
+    Password: builder.Configuration["EMAIL_SMTP_PASSWORD"] ?? builder.Configuration["Email:Password"] ?? string.Empty,
+    From:     builder.Configuration["EMAIL_FROM"]          ?? builder.Configuration["Email:From"]     ?? string.Empty,
+    To:       builder.Configuration["EMAIL_TO"]            ?? builder.Configuration["Email:To"]       ?? string.Empty
+);
+
+if (!string.IsNullOrWhiteSpace(emailSettings.SmtpHost) && !string.IsNullOrWhiteSpace(emailSettings.To))
+    builder.Services.AddSingleton<IEmailService>(sp =>
+        new SmtpEmailService(emailSettings, sp.GetRequiredService<ILogger<SmtpEmailService>>()));
+else
+    builder.Services.AddSingleton<IEmailService, NullEmailService>();
 
 // ── CORS ──────────────────────────────────────────────────────────────────────
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
