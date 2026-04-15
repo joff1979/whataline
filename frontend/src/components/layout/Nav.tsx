@@ -56,16 +56,18 @@ export default function Nav() {
       >
         <div className="container mx-auto flex items-center justify-between py-5">
           {/* Logo */}
-          <NavLink
-            to="/"
-            className="font-display text-xl font-normal transition-colors duration-200"
-            style={() =>
-              scrolled || !hasDarkHero
-                ? { color: 'var(--color-text-primary)' }
-                : { color: 'var(--color-text-inverse)' }
-            }
-          >
-            Kat Rollinson
+          <NavLink to="/" aria-label="What A Line — home">
+            <img
+              src="/logo.png"
+              alt="What A Line"
+              className="h-10 w-auto transition-all duration-300"
+              style={{
+                filter: scrolled || !hasDarkHero
+                  ? 'none'
+                  : 'brightness(0) invert(1)',
+                mixBlendMode: scrolled || !hasDarkHero ? 'multiply' : 'normal',
+              }}
+            />
           </NavLink>
 
           {/* Desktop links */}
