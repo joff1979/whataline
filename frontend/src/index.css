@@ -4,30 +4,33 @@
 
 /* ── Design tokens ──────────────────────────────────────────────────────────── */
 :root {
-  /* Backgrounds — blush cream light, deep teal dark */
+  /* Backgrounds — blush cream light, dark teal dark */
   --color-bg:             #F4EEEF;
   --color-bg-cream:       #F4EEEF;
   --color-bg-elevated:    #FAF7F8;
-  --color-bg-dark:        #172929;
-  --color-bg-warm-dark:   #1D3535;
+  --color-bg-dark:        #004040;
+  --color-bg-warm-dark:   #005555;
 
-  /* Text — teal family on light, cream on dark */
-  --color-text-primary:   #172929;
-  --color-text-secondary: #3D6B6B;
-  --color-text-muted:     #7A9E9E;
+  /* Text */
+  --color-text-primary:   #004040;
+  --color-text-secondary: #008080;
+  --color-text-muted:     #A6C6C9;
   --color-text-inverse:   #FAF7F8;
 
-  /* Accent — dusty rose / light pink */
-  --color-accent:         #B8756A;
-  --color-accent-light:   #CDA099;
-  --color-accent-subtle:  #F0DCDA;
+  /* Accent — dusty rose / mauve */
+  --color-accent:         #C9A9A6;
+  --color-accent-light:   #D9C0BE;
+  --color-accent-subtle:  #EEE5E4;
 
-  /* Borders — teal-tinted */
-  --color-border:         rgba(23, 41, 41, 0.12);
-  --color-border-strong:  rgba(23, 41, 41, 0.30);
+  /* Turquoise — complementary secondary */
+  --color-turquoise:      #A6C6C9;
 
-  --ff-display: 'Cormorant Garamond', Georgia, serif;
-  --ff-body:    'DM Sans', system-ui, sans-serif;
+  /* Borders */
+  --color-border:         rgba(0, 64, 64, 0.12);
+  --color-border-strong:  rgba(0, 64, 64, 0.30);
+
+  --ff-display: 'Amaranth', system-ui, sans-serif;
+  --ff-body:    'Raleway', system-ui, sans-serif;
 }
 
 /* ── Base reset ─────────────────────────────────────────────────────────────── */

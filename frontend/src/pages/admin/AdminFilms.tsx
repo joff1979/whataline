@@ -40,14 +40,18 @@ function AwardEditor({ awards, onChange }: AwardEditorProps) {
         </button>
       </div>
       {awards.map((a, i) => (
-        <div key={i} className="flex gap-2 items-center">
+        <div key={i} className="grid grid-cols-[1fr_1fr_5rem_auto] gap-2 items-center">
           <input value={a.name} onChange={(e) => update(i, 'name', e.target.value)}
-            placeholder="Award name"
-            className="flex-1 border px-2 py-1 font-body text-sm outline-none rounded-none"
+            placeholder="Award"
+            className="border px-2 py-1 font-body text-sm outline-none rounded-none"
+            style={{ borderColor: 'var(--color-border-strong)' }} />
+          <input value={a.category ?? ''} onChange={(e) => update(i, 'category', e.target.value)}
+            placeholder="Festival"
+            className="border px-2 py-1 font-body text-sm outline-none rounded-none"
             style={{ borderColor: 'var(--color-border-strong)' }} />
           <input value={a.year ?? ''} onChange={(e) => update(i, 'year', e.target.value)}
             placeholder="Year" type="number"
-            className="w-20 border px-2 py-1 font-body text-sm outline-none rounded-none"
+            className="border px-2 py-1 font-body text-sm outline-none rounded-none"
             style={{ borderColor: 'var(--color-border-strong)' }} />
           <button type="button" onClick={() => remove(i)}
             className="font-body text-xs text-red-500 rounded-none px-2">✕</button>
@@ -196,12 +200,14 @@ export default function AdminFilms() {
     await adminCreateFilmProject(data);
     setCreating(false);
     load();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleUpdate = async (id: number, data: UpsertFilmProject) => {
     await adminUpdateFilmProject(id, data);
     setEditing(null);
     load();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleDelete = async (id: number) => {
@@ -267,29 +273,71 @@ export default function AdminFilms() {
         </p>
       )}
 
-      <div className="space-y-2">
+      <div className="space-y-3">
         {projects.map((p) => (
           <div key={p.id} draggable
             onDragStart={() => setDragging(p.id)}
             onDragOver={(e) => e.preventDefault()}
             onDrop={() => handleDrop(p.id)}
-            className="flex items-center gap-4 p-4 cursor-grab active:cursor-grabbing transition-opacity"
+            className="flex gap-4 p-4 cursor-grab active:cursor-grabbing transition-opacity"
             style={{
               background: 'var(--color-bg-elevated)',
               opacity: dragging === p.id ? 0.4 : 1,
               borderLeft: p.featured ? '4px solid var(--color-accent)' : '4px solid transparent',
             }}
           >
-            <span className="font-body text-xs" style={{ color: 'var(--color-text-muted)' }}>⠿</span>
-            {p.posterUrl && <img src={p.posterUrl} alt={p.title} className="w-10 object-cover aspect-[2/3] flex-shrink-0" />}
+            {/* Drag handle */}
+            <span className="font-body text-sm mt-1 flex-shrink-0" style={{ color: 'var(--color-text-muted)' }}>⠿</span>
+
+            {/* Poster thumbnail */}
+            {p.posterUrl
+              ? <img src={p.posterUrl} alt={p.title} className="w-14 object-cover aspect-[2/3] flex-shrink-0" />
+              : <div className="w-14 aspect-[2/3] flex-shrink-0 flex items-center justify-center font-display text-xl"
+                  style={{ background: 'linear-gradient(135deg, #004040, #C9A9A6)', color: 'rgba(250,247,248,0.6)' }}>
+                  {p.title.charAt(0)}
+                </div>
+            }
+
+            {/* Content */}
             <div className="flex-1 min-w-0">
-              <div className="font-display text-base truncate">{p.title}</div>
-              <div className="font-body text-xs mt-0.5" style={{ color: 'var(--color-text-muted)' }}>
-                {[p.format, p.year, p.genre, p.status].filter(Boolean).join(' · ')}
+              <div className="flex flex-wrap items-center gap-2 mb-1">
+                {p.format && (
+                  <span className="font-body text-[10px] tracking-widest uppercase px-2 py-0.5"
+                    style={{ background: 'var(--color-bg-dark)', color: 'var(--color-text-inverse)' }}>
+                    {p.format}
+                  </span>
+                )}
+                <span className="font-body text-[10px] tracking-wide uppercase px-2 py-0.5"
+                  style={{
+                    background: p.status === 'published' ? 'rgba(0,128,128,0.12)' : 'rgba(0,64,64,0.07)',
+                    color: p.status === 'published' ? 'var(--color-text-secondary)' : 'var(--color-text-muted)',
+                  }}>
+                  {p.status}
+                </span>
+                {p.featured && (
+                  <span className="font-body text-[10px]" style={{ color: 'var(--color-accent)' }}>★ Featured</span>
+                )}
               </div>
+              <div className="font-display text-base" style={{ color: 'var(--color-text-primary)' }}>{p.title}</div>
+              {p.logline && (
+                <p className="font-body text-xs italic mt-1 leading-relaxed" style={{ color: 'var(--color-text-muted)' }}>
+                  {p.logline}
+                </p>
+              )}
+              {p.awards.length > 0 && (
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {p.awards.map((a, i) => (
+                    <span key={i} className="font-body text-[10px] px-2 py-0.5"
+                      style={{ background: 'var(--color-accent-subtle)', color: 'var(--color-accent)' }}>
+                      {a.name}{a.category ? ` · ${a.category}` : ''}{a.year ? ` · ${a.year}` : ''}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
+
             <button onClick={() => { setCreating(false); setEditing(p); }}
-              className="font-body text-xs tracking-wide uppercase px-3 py-1.5 rounded-none border transition-colors duration-200 flex-shrink-0"
+              className="font-body text-xs tracking-wide uppercase px-3 py-1.5 rounded-none border transition-colors duration-200 flex-shrink-0 self-start"
               style={{ borderColor: 'var(--color-border-strong)', color: 'var(--color-text-secondary)' }}>
               Edit
             </button>

@@ -180,30 +180,43 @@ export default function AdminTestimonials() {
         </p>
       )}
 
-      <div className="space-y-2">
+      <div className="space-y-3">
         {testimonials.map((t) => (
           <div key={t.id} draggable
             onDragStart={() => setDragging(t.id)}
             onDragOver={(e) => e.preventDefault()}
             onDrop={() => handleDrop(t.id)}
-            className="flex items-start gap-4 p-4 cursor-grab active:cursor-grabbing"
+            className="flex gap-4 p-5 cursor-grab active:cursor-grabbing"
             style={{
               background: 'var(--color-bg-elevated)',
               opacity: dragging === t.id ? 0.4 : 1,
               borderLeft: t.published ? '4px solid var(--color-accent)' : '4px solid transparent',
             }}
           >
-            <span className="font-body text-xs mt-1" style={{ color: 'var(--color-text-muted)' }}>⠿</span>
+            <span className="font-body text-sm mt-1 flex-shrink-0" style={{ color: 'var(--color-text-muted)' }}>⠿</span>
             <div className="flex-1 min-w-0">
-              <div className="font-display italic text-base truncate">&ldquo;{t.quoteText}&rdquo;</div>
-              <div className="font-body text-xs mt-1" style={{ color: 'var(--color-text-muted)' }}>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="font-body text-[10px] tracking-wide uppercase px-2 py-0.5"
+                  style={{
+                    background: t.published ? 'rgba(0,128,128,0.12)' : 'rgba(0,64,64,0.07)',
+                    color: t.published ? 'var(--color-text-secondary)' : 'var(--color-text-muted)',
+                  }}>
+                  {t.published ? 'Published' : 'Draft'}
+                </span>
+              </div>
+              {/* Quote rendered as it appears on site */}
+              <span className="font-display text-3xl leading-none" style={{ color: 'var(--color-accent)', opacity: 0.5 }}>"</span>
+              <p className="font-body text-sm italic leading-relaxed -mt-2 mb-3" style={{ color: 'var(--color-text-primary)' }}>
+                {t.quoteText}
+              </p>
+              <p className="font-body text-xs tracking-wide uppercase" style={{ color: 'var(--color-text-secondary)' }}>
                 — {t.attributeName}
                 {t.attributeTitle && `, ${t.attributeTitle}`}
                 {t.organisation && `, ${t.organisation}`}
-              </div>
+              </p>
             </div>
             <button onClick={() => { setCreating(false); setEditing(t); }}
-              className="font-body text-xs tracking-wide uppercase px-3 py-1.5 rounded-none border flex-shrink-0"
+              className="font-body text-xs tracking-wide uppercase px-3 py-1.5 rounded-none border flex-shrink-0 self-start"
               style={{ borderColor: 'var(--color-border-strong)', color: 'var(--color-text-secondary)' }}>
               Edit
             </button>

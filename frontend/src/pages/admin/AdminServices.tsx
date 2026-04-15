@@ -237,28 +237,42 @@ export default function AdminServices() {
         </p>
       )}
 
-      <div className="space-y-2">
+      <div className="space-y-3">
         {services.map((s) => (
           <div key={s.id} draggable
             onDragStart={() => setDragging(s.id)}
             onDragOver={(e) => e.preventDefault()}
             onDrop={() => handleDrop(s.id)}
-            className="flex items-center gap-4 p-4 cursor-grab active:cursor-grabbing"
+            className="flex gap-4 p-4 cursor-grab active:cursor-grabbing"
             style={{
               background: 'var(--color-bg-elevated)',
               opacity: dragging === s.id ? 0.4 : 1,
               borderLeft: s.published ? '4px solid var(--color-accent)' : '4px solid transparent',
             }}
           >
-            <span className="font-body text-xs" style={{ color: 'var(--color-text-muted)' }}>⠿</span>
+            <span className="font-body text-sm mt-1 flex-shrink-0" style={{ color: 'var(--color-text-muted)' }}>⠿</span>
             <div className="flex-1 min-w-0">
-              <div className="font-display text-base truncate">{s.title}</div>
-              <div className="font-body text-xs mt-0.5" style={{ color: 'var(--color-text-muted)' }}>
-                {s.samples.length} sample{s.samples.length !== 1 ? 's' : ''} · {s.published ? 'Published' : 'Draft'}
+              <div className="flex items-center gap-2 mb-1">
+                <span className="font-body text-[10px] tracking-wide uppercase px-2 py-0.5"
+                  style={{
+                    background: s.published ? 'rgba(0,128,128,0.12)' : 'rgba(0,64,64,0.07)',
+                    color: s.published ? 'var(--color-text-secondary)' : 'var(--color-text-muted)',
+                  }}>
+                  {s.published ? 'Published' : 'Draft'}
+                </span>
+                {s.samples.length > 0 && (
+                  <span className="font-body text-[10px]" style={{ color: 'var(--color-text-muted)' }}>
+                    {s.samples.length} sample{s.samples.length !== 1 ? 's' : ''}
+                  </span>
+                )}
               </div>
+              <div className="font-display text-lg mb-1" style={{ color: 'var(--color-text-primary)' }}>{s.title}</div>
+              <p className="font-body text-sm leading-relaxed" style={{ color: 'var(--color-text-muted)' }}>
+                {s.description}
+              </p>
             </div>
             <button onClick={() => { setCreating(false); setEditing(s); }}
-              className="font-body text-xs tracking-wide uppercase px-3 py-1.5 rounded-none border flex-shrink-0"
+              className="font-body text-xs tracking-wide uppercase px-3 py-1.5 rounded-none border flex-shrink-0 self-start"
               style={{ borderColor: 'var(--color-border-strong)', color: 'var(--color-text-secondary)' }}>
               Edit
             </button>

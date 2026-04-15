@@ -4,8 +4,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        display: ['Cormorant Garamond', 'Georgia', 'serif'],
-        body: ['DM Sans', 'system-ui', 'sans-serif'],
+        display: ['Amaranth', 'system-ui', 'sans-serif'],
+        body: ['Raleway', 'system-ui', 'sans-serif'],
       },
       fontSize: {
         hero: ['clamp(3rem, 8vw, 7rem)',       { lineHeight: '1.0',  letterSpacing: '-0.02em' }],
@@ -21,13 +21,13 @@ export default {
       colors: {
         cream:        '#F4EEEF',
         offwhite:     '#FAF7F8',
-        teal:         '#172929',
-        'teal-mid':   '#3D6B6B',
-        'teal-muted': '#7A9E9E',
-        'teal-dark':  '#1D3535',
-        'dusty-rose': '#B8756A',
-        'rose-light': '#CDA099',
-        'rose-subtle':'#F0DCDA',
+        teal:         '#008080',
+        'teal-dark':  '#004040',
+        'teal-deeper':'#005555',
+        turquoise:    '#A6C6C9',
+        'dusty-rose': '#C9A9A6',
+        'rose-light': '#D9C0BE',
+        'rose-subtle':'#EEE5E4',
       },
       container: {
         center: true,

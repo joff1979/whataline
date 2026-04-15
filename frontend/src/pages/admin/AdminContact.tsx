@@ -171,14 +171,16 @@ export default function AdminContact() {
                   </div>
                   <div className="flex gap-2">
                     <a
-                      href={`mailto:${selected.email}?subject=Re: ${encodeURIComponent(selected.subject ?? '')}`}
+                      href={`https://mail.zoho.com/zm/#compose?to=${encodeURIComponent(selected.email)}&subject=${encodeURIComponent('Re: ' + (selected.subject ?? 'your message'))}&body=${encodeURIComponent(`Hi ${selected.name},\n\n`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="font-body text-xs tracking-widest uppercase px-4 py-2 transition-colors duration-200"
                       style={{
                         background: 'var(--color-accent)',
                         color: 'white',
                       }}
                     >
-                      Reply
+                      Reply in Zoho
                     </a>
                     <button
                       onClick={() => remove(selected.id)}
