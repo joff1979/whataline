@@ -10,10 +10,15 @@ const navLinks = [
   { to: '/contact',            label: 'Contact'  },
 ];
 
+// Pages that open with a full-width dark hero — nav can be transparent there
+const DARK_HERO_ROUTES = ['/', '/about', '/portfolio/writing', '/contact'];
+
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+
+  const hasDarkHero = DARK_HERO_ROUTES.includes(location.pathname);
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -44,8 +49,8 @@ export default function Nav() {
       <header
         className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
         style={
-          scrolled
-            ? { background: 'rgba(250,247,242,0.95)', backdropFilter: 'blur(8px)' }
+          scrolled || !hasDarkHero
+            ? { background: 'rgba(244,238,239,0.95)', backdropFilter: 'blur(8px)', borderBottom: '1px solid rgba(23,41,41,0.08)' }
             : { background: 'transparent' }
         }
       >
@@ -54,8 +59,8 @@ export default function Nav() {
           <NavLink
             to="/"
             className="font-display text-xl font-normal transition-colors duration-200"
-            style={({ isActive: _ }) =>
-              scrolled
+            style={() =>
+              scrolled || !hasDarkHero
                 ? { color: 'var(--color-text-primary)' }
                 : { color: 'var(--color-text-inverse)' }
             }
@@ -68,8 +73,8 @@ export default function Nav() {
             {navLinks.map(({ to, label }) => (
               <NavLink key={to} to={to} className={linkClass}
                 style={({ isActive }) =>
-                  !isActive && !scrolled
-                    ? { color: 'rgba(250,247,242,0.8)' }
+                  !isActive && !scrolled && hasDarkHero
+                    ? { color: 'rgba(250,247,248,0.8)' }
                     : {}
                 }
               >
@@ -87,21 +92,21 @@ export default function Nav() {
             <span
               className="block w-5 h-px transition-all duration-300 origin-center"
               style={{
-                background: scrolled ? 'var(--color-text-primary)' : 'var(--color-text-inverse)',
+                background: scrolled || !hasDarkHero ? 'var(--color-text-primary)' : 'var(--color-text-inverse)',
                 transform: mobileOpen ? 'translateY(5px) rotate(45deg)' : '',
               }}
             />
             <span
               className="block w-5 h-px transition-all duration-300"
               style={{
-                background: scrolled ? 'var(--color-text-primary)' : 'var(--color-text-inverse)',
+                background: scrolled || !hasDarkHero ? 'var(--color-text-primary)' : 'var(--color-text-inverse)',
                 opacity: mobileOpen ? 0 : 1,
               }}
             />
             <span
               className="block w-5 h-px transition-all duration-300 origin-center"
               style={{
-                background: scrolled ? 'var(--color-text-primary)' : 'var(--color-text-inverse)',
+                background: scrolled || !hasDarkHero ? 'var(--color-text-primary)' : 'var(--color-text-inverse)',
                 transform: mobileOpen ? 'translateY(-5px) rotate(-45deg)' : '',
               }}
             />
