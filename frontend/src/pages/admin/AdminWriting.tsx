@@ -102,6 +102,7 @@ interface ProjectFormProps {
 function ProjectForm({ initial, onSave, onCancel, onDelete }: ProjectFormProps) {
   const [form, setForm] = useState<UpsertWritingProject>(initial);
   const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
   const set = (field: keyof UpsertWritingProject, value: unknown) =>
@@ -111,9 +112,12 @@ function ProjectForm({ initial, onSave, onCancel, onDelete }: ProjectFormProps) 
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
+    setUploadError(null);
     try {
       const url = await adminUpload(file);
       set('posterUrl', url);
+    } catch (err) {
+      setUploadError(`Upload failed: ${String(err)}`);
     } finally {
       setUploading(false);
     }
@@ -177,6 +181,9 @@ function ProjectForm({ initial, onSave, onCancel, onDelete }: ProjectFormProps) 
         <p className="font-body text-xs mb-2" style={{ color: 'var(--color-text-muted)' }}>
           Uploading…
         </p>
+      )}
+      {uploadError && (
+        <p className="font-body text-xs mb-2 text-red-600">{uploadError}</p>
       )}
 
       <div className="flex gap-4 mb-3">

@@ -6,6 +6,7 @@ const navItems = [
   { to: '/admin/films',        label: 'Films'        },
   { to: '/admin/services',     label: 'Services'     },
   { to: '/admin/testimonials', label: 'Testimonials' },
+  { to: '/admin/about',        label: 'About Page'   },
   { to: '/admin/contact',      label: 'Inbox'        },
   { to: '/admin/settings',     label: 'Settings'     },
 ];

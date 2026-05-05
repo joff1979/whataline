@@ -3,11 +3,12 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const navLinks = [
-  { to: '/about',              label: 'About'    },
-  { to: '/portfolio/writing',  label: 'Writing'  },
-  { to: '/portfolio/films',    label: 'Films'    },
-  { to: '/portfolio/services', label: 'Services' },
-  { to: '/contact',            label: 'Contact'  },
+  { to: '/about',              label: 'About'        },
+  { to: '/portfolio/writing',  label: 'Writing'      },
+  { to: '/portfolio/films',    label: 'Films'        },
+  { to: '/portfolio/services', label: 'Services'     },
+  { to: '/testimonials',       label: 'Testimonials' },
+  { to: '/contact',            label: 'Contact'      },
 ];
 
 // Pages that open with a full-width dark hero — nav can be transparent there
