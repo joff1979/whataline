@@ -1,4 +1,19 @@
-/node_modules/
-/public/build/
-
+# OS
 .DS_Store
+Thumbs.db
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+frontend/.env.production
+
+# Backend — never commit secrets
+backend/Whataline.Api/appsettings.Development.json
+backend/**/bin/
+backend/**/obj/
+backend/**/.vs/
+
+# Old placeholder build artifacts
+/public/build/
+/node_modules/
