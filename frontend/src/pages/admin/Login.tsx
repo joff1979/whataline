@@ -7,7 +7,7 @@ export default function AdminLogin() {
   const location = useLocation();
   const from = (location.state as { from?: { pathname: string } })?.from?.pathname ?? '/admin/writing';
 
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -17,10 +17,10 @@ export default function AdminLogin() {
     setError(null);
     setLoading(true);
     try {
-      await login(username, password);
+      await login(email, password);
       navigate(from, { replace: true });
     } catch {
-      setError('Invalid username or password.');
+      setError('Invalid email or password.');
     } finally {
       setLoading(false);
     }
@@ -43,14 +43,14 @@ export default function AdminLogin() {
           <div>
             <label className="block font-body text-xs tracking-wide uppercase mb-1"
               style={{ color: 'var(--color-text-muted)' }}>
-              Username
+              Email
             </label>
             <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
-              autoComplete="username"
+              autoComplete="email"
               className="w-full border px-3 py-2 font-body text-sm outline-none rounded-none"
               style={{ borderColor: 'var(--color-border-strong)', background: 'white' }}
             />

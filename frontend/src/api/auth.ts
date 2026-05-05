@@ -1,18 +1,27 @@
-import { api } from './client';
+import { supabase } from '../lib/supabase';
 
-export const login = (username: string, password: string) =>
-  api.post<{ token: string }>('/api/auth/login', { username, password })
-    .then((r) => {
-      sessionStorage.setItem('jwt', r.data.token);
-      return r.data.token;
-    });
+// Email-based login (Supabase Auth). Kat is invited via the Supabase dashboard.
+export async function login(email: string, password: string): Promise<void> {
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) throw error;
+}
 
-export const logout = () => {
-  sessionStorage.removeItem('jwt');
-};
+export async function logout(): Promise<void> {
+  await supabase.auth.signOut();
+}
 
-export const isAuthenticated = () =>
-  Boolean(sessionStorage.getItem('jwt'));
+// Synchronous "is authenticated" check kept for backwards compatibility with
+// the original RequireAuth component. Components added going forward should
+// use the reactive `useAuth()` hook in src/hooks/useAuth.ts instead.
+export function isAuthenticated(): boolean {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const session = (supabase.auth as any).currentSession ?? null;
+  return session !== null && session.expires_at * 1000 > Date.now();
+}
 
-export const changePassword = (currentPassword: string, newPassword: string) =>
-  api.post('/api/auth/change-password', { currentPassword, newPassword });
+export async function changePassword(_currentPassword: string, newPassword: string): Promise<void> {
+  // Supabase Auth doesn't require the current password to update —
+  // the session token authorises it. The arg is kept for the existing form UX.
+  const { error } = await supabase.auth.updateUser({ password: newPassword });
+  if (error) throw error;
+}

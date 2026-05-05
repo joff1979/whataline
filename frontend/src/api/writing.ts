@@ -1,33 +1,142 @@
-import { api } from './client';
+import { supabase } from '../lib/supabase';
 import type { WritingProject, UpsertWritingProject } from './types';
 
-// Public
-export const getWritingProjects = () =>
-  api.get<WritingProject[]>('/api/writing').then((r) => r.data);
+const SELECT = `
+  id,
+  title,
+  logline,
+  posterUrl:poster_url,
+  genre,
+  format,
+  scriptUrl:script_url,
+  status,
+  featured,
+  sortOrder:sort_order,
+  awards (id, name, category, year)
+`;
 
-export const getWritingProject = (id: number) =>
-  api.get<WritingProject>(`/api/writing/${id}`).then((r) => r.data);
+// ── Public ────────────────────────────────────────────────────────────────
+export async function getWritingProjects(): Promise<WritingProject[]> {
+  const { data, error } = await supabase
+    .from('writing_projects')
+    .select(SELECT)
+    .eq('status', 'published')
+    .order('sort_order', { ascending: true });
+  if (error) throw error;
+  return (data ?? []) as unknown as WritingProject[];
+}
 
-// Admin
-export const adminGetWritingProjects = () =>
-  api.get<WritingProject[]>('/api/admin/writing').then((r) => r.data);
+export async function getWritingProject(id: number): Promise<WritingProject> {
+  const { data, error } = await supabase
+    .from('writing_projects')
+    .select(SELECT)
+    .eq('id', id)
+    .single();
+  if (error) throw error;
+  return data as unknown as WritingProject;
+}
 
-export const adminCreateWritingProject = (data: UpsertWritingProject) =>
-  api.post('/api/admin/writing', data).then((r) => r.data);
+// ── Admin ─────────────────────────────────────────────────────────────────
+export async function adminGetWritingProjects(): Promise<WritingProject[]> {
+  const { data, error } = await supabase
+    .from('writing_projects')
+    .select(SELECT)
+    .order('sort_order', { ascending: true });
+  if (error) throw error;
+  return (data ?? []) as unknown as WritingProject[];
+}
 
-export const adminUpdateWritingProject = (id: number, data: UpsertWritingProject) =>
-  api.put(`/api/admin/writing/${id}`, data);
+export async function adminCreateWritingProject(input: UpsertWritingProject): Promise<WritingProject> {
+  const { data, error } = await supabase
+    .from('writing_projects')
+    .insert({
+      title: input.title,
+      logline: input.logline,
+      poster_url: input.posterUrl,
+      genre: input.genre,
+      format: input.format,
+      script_url: input.scriptUrl,
+      status: input.status,
+      featured: input.featured,
+      sort_order: input.sortOrder,
+    })
+    .select('id')
+    .single();
+  if (error) throw error;
 
-export const adminDeleteWritingProject = (id: number) =>
-  api.delete(`/api/admin/writing/${id}`);
+  await syncWritingAwards(data.id, input.awards);
+  return getWritingProject(data.id);
+}
 
-export const adminReorderWritingProjects = (items: { id: number; sortOrder: number }[]) =>
-  api.patch('/api/admin/writing/reorder', items);
+export async function adminUpdateWritingProject(id: number, input: UpsertWritingProject): Promise<void> {
+  const { error } = await supabase
+    .from('writing_projects')
+    .update({
+      title: input.title,
+      logline: input.logline,
+      poster_url: input.posterUrl,
+      genre: input.genre,
+      format: input.format,
+      script_url: input.scriptUrl,
+      status: input.status,
+      featured: input.featured,
+      sort_order: input.sortOrder,
+    })
+    .eq('id', id);
+  if (error) throw error;
 
-export const adminUpload = (file: File) => {
-  const form = new FormData();
-  form.append('file', file);
-  return api.post<{ url: string }>('/api/admin/upload', form, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  }).then((r) => r.data.url);
-};
+  await syncWritingAwards(id, input.awards);
+}
+
+export async function adminDeleteWritingProject(id: number): Promise<void> {
+  const { error } = await supabase.from('writing_projects').delete().eq('id', id);
+  if (error) throw error;
+}
+
+export async function adminReorderWritingProjects(items: { id: number; sortOrder: number }[]): Promise<void> {
+  // Run updates in parallel — small list, no need for an RPC
+  await Promise.all(
+    items.map(({ id, sortOrder }) =>
+      supabase.from('writing_projects').update({ sort_order: sortOrder }).eq('id', id)
+    )
+  );
+}
+
+// ── Awards (polymorphic) ──────────────────────────────────────────────────
+async function syncWritingAwards(
+  writingProjectId: number,
+  awards: UpsertWritingProject['awards']
+): Promise<void> {
+  // Reset & insert — list is small (single-digit count)
+  const { error: delError } = await supabase
+    .from('awards')
+    .delete()
+    .eq('writing_project_id', writingProjectId);
+  if (delError) throw delError;
+
+  if (awards.length === 0) return;
+
+  const { error: insError } = await supabase.from('awards').insert(
+    awards.map(a => ({
+      name: a.name,
+      category: a.category,
+      year: a.year,
+      writing_project_id: writingProjectId,
+    }))
+  );
+  if (insError) throw insError;
+}
+
+// ── File upload (Supabase Storage) ────────────────────────────────────────
+export async function adminUpload(file: File): Promise<string> {
+  const ext = file.name.includes('.') ? file.name.split('.').pop() : 'bin';
+  const path = `${crypto.randomUUID()}.${ext}`;
+
+  const { error } = await supabase.storage
+    .from('media')
+    .upload(path, file, { contentType: file.type, upsert: false });
+  if (error) throw error;
+
+  const { data } = supabase.storage.from('media').getPublicUrl(path);
+  return data.publicUrl;
+}

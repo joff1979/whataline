@@ -27,7 +27,21 @@
       "Bash(echo \"API PID: $!\")",
       "Read(//tmp/**)",
       "Bash(node_modules/.bin/vite --port 5173)",
-      "Bash(echo \"Vite PID: $!\" sleep 5)"
+      "Bash(echo \"Vite PID: $!\" sleep 5)",
+      "Bash(git check-ignore:*)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(git rm:*)",
+      "Bash(git push:*)",
+      "Bash(git filter-branch:*)",
+      "Bash(git stash:*)",
+      "Bash(gh pr create --title 'Phase 1 — React frontend + .NET 10 API' --base main --head claude/sleepy-lumiere --body ':*)",
+      "Bash(cmd.exe /c \"gh pr create --title \\\\\"Phase 1 — React frontend + .NET 10 API\\\\\" --base main --head claude/sleepy-lumiere --body \\\\\"Staging preview for review. Full Phase 1 build — React frontend + .NET 10 API.\\\\\"\")",
+      "Bash(git fetch:*)",
+      "Bash(git merge:*)",
+      "WebFetch(domain:www.linkedin.com)",
+      "WebFetch(domain:www.colorpsychology.org)",
+      "Bash(dotnet add:*)",
+      "Bash(dotnet build:*)"
     ]
   }
 }

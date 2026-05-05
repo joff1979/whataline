@@ -1,4 +1,4 @@
-import { api } from './client';
+import { supabase } from '../lib/supabase';
 import type { FilmProject } from './types';
 
 export interface UpsertFilmProject {
@@ -16,22 +16,128 @@ export interface UpsertFilmProject {
   awards: { name: string; category: string | null; year: number | null }[];
 }
 
-// Public
-export const getFilmProjects = () =>
-  api.get<FilmProject[]>('/api/films').then((r) => r.data);
+const SELECT = `
+  id,
+  title,
+  logline,
+  posterUrl:poster_url,
+  genre,
+  format,
+  year,
+  trailerUrl:trailer_url,
+  filmUrl:film_url,
+  status,
+  featured,
+  sortOrder:sort_order,
+  awards (id, name, category, year)
+`;
 
-// Admin
-export const adminGetFilmProjects = () =>
-  api.get<FilmProject[]>('/api/admin/films').then((r) => r.data);
+// ── Public ────────────────────────────────────────────────────────────────
+export async function getFilmProjects(): Promise<FilmProject[]> {
+  const { data, error } = await supabase
+    .from('film_projects')
+    .select(SELECT)
+    .eq('status', 'published')
+    .order('sort_order', { ascending: true });
+  if (error) throw error;
+  return (data ?? []) as unknown as FilmProject[];
+}
 
-export const adminCreateFilmProject = (data: UpsertFilmProject) =>
-  api.post('/api/admin/films', data).then((r) => r.data);
+// ── Admin ─────────────────────────────────────────────────────────────────
+export async function adminGetFilmProjects(): Promise<FilmProject[]> {
+  const { data, error } = await supabase
+    .from('film_projects')
+    .select(SELECT)
+    .order('sort_order', { ascending: true });
+  if (error) throw error;
+  return (data ?? []) as unknown as FilmProject[];
+}
 
-export const adminUpdateFilmProject = (id: number, data: UpsertFilmProject) =>
-  api.put(`/api/admin/films/${id}`, data);
+export async function adminCreateFilmProject(input: UpsertFilmProject): Promise<FilmProject> {
+  const { data, error } = await supabase
+    .from('film_projects')
+    .insert({
+      title: input.title,
+      logline: input.logline,
+      poster_url: input.posterUrl,
+      genre: input.genre,
+      format: input.format,
+      year: input.year,
+      trailer_url: input.trailerUrl,
+      film_url: input.filmUrl,
+      status: input.status,
+      featured: input.featured,
+      sort_order: input.sortOrder,
+    })
+    .select('id')
+    .single();
+  if (error) throw error;
 
-export const adminDeleteFilmProject = (id: number) =>
-  api.delete(`/api/admin/films/${id}`);
+  await syncFilmAwards(data.id, input.awards);
 
-export const adminReorderFilmProjects = (items: { id: number; sortOrder: number }[]) =>
-  api.patch('/api/admin/films/reorder', items);
+  const { data: full, error: fetchErr } = await supabase
+    .from('film_projects')
+    .select(SELECT)
+    .eq('id', data.id)
+    .single();
+  if (fetchErr) throw fetchErr;
+  return full as unknown as FilmProject;
+}
+
+export async function adminUpdateFilmProject(id: number, input: UpsertFilmProject): Promise<void> {
+  const { error } = await supabase
+    .from('film_projects')
+    .update({
+      title: input.title,
+      logline: input.logline,
+      poster_url: input.posterUrl,
+      genre: input.genre,
+      format: input.format,
+      year: input.year,
+      trailer_url: input.trailerUrl,
+      film_url: input.filmUrl,
+      status: input.status,
+      featured: input.featured,
+      sort_order: input.sortOrder,
+    })
+    .eq('id', id);
+  if (error) throw error;
+
+  await syncFilmAwards(id, input.awards);
+}
+
+export async function adminDeleteFilmProject(id: number): Promise<void> {
+  const { error } = await supabase.from('film_projects').delete().eq('id', id);
+  if (error) throw error;
+}
+
+export async function adminReorderFilmProjects(items: { id: number; sortOrder: number }[]): Promise<void> {
+  await Promise.all(
+    items.map(({ id, sortOrder }) =>
+      supabase.from('film_projects').update({ sort_order: sortOrder }).eq('id', id)
+    )
+  );
+}
+
+async function syncFilmAwards(
+  filmProjectId: number,
+  awards: UpsertFilmProject['awards']
+): Promise<void> {
+  const { error: delError } = await supabase
+    .from('awards')
+    .delete()
+    .eq('film_project_id', filmProjectId);
+  if (delError) throw delError;
+
+  if (awards.length === 0) return;
+
+  const { error: insError } = await supabase.from('awards').insert(
+    awards.map(a => ({
+      name: a.name,
+      category: a.category,
+      year: a.year,
+      film_project_id: filmProjectId,
+    }))
+  );
+  if (insError) throw insError;
+}
