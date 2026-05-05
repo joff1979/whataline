@@ -4,12 +4,12 @@
 
 /* ── Design tokens ──────────────────────────────────────────────────────────── */
 :root {
-  /* Backgrounds — blush cream light, dark teal dark */
+  /* Backgrounds — blush cream light, teal dark */
   --color-bg:             #F4EEEF;
   --color-bg-cream:       #F4EEEF;
   --color-bg-elevated:    #FAF7F8;
-  --color-bg-dark:        #004040;
-  --color-bg-warm-dark:   #005555;
+  --color-bg-dark:        #008080;
+  --color-bg-warm-dark:   #009898;
 
   /* Text */
   --color-text-primary:   #004040;
@@ -26,8 +26,8 @@
   --color-turquoise:      #A6C6C9;
 
   /* Borders */
-  --color-border:         rgba(0, 64, 64, 0.12);
-  --color-border-strong:  rgba(0, 64, 64, 0.30);
+  --color-border:         rgba(0, 128, 128, 0.12);
+  --color-border-strong:  rgba(0, 128, 128, 0.30);
 
   --ff-display: 'Amaranth', system-ui, sans-serif;
   --ff-body:    'Raleway', system-ui, sans-serif;

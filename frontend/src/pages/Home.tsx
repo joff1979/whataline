@@ -115,7 +115,7 @@ export default function Home() {
       exit={{ opacity: 0, transition: { duration: 0.2 } }}
     >
       {/* ── Video Hero ──────────────────────────────────────────────────────── */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden bg-[#004040]">
+      <section className="relative h-screen flex items-center justify-center overflow-hidden" style={{ background: 'var(--color-bg-dark)' }}>
 
         {/* YouTube iframe — stretched & centred, pointer-events off */}
         <div

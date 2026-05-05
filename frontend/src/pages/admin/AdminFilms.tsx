@@ -302,7 +302,7 @@ export default function AdminFilms() {
             {p.posterUrl
               ? <img src={p.posterUrl} alt={p.title} className="w-14 object-cover aspect-[2/3] flex-shrink-0" />
               : <div className="w-14 aspect-[2/3] flex-shrink-0 flex items-center justify-center font-display text-xl"
-                  style={{ background: 'linear-gradient(135deg, #004040, #C9A9A6)', color: 'rgba(250,247,248,0.6)' }}>
+                  style={{ background: 'linear-gradient(135deg, #008080, #C9A9A6)', color: 'rgba(250,247,248,0.6)' }}>
                   {p.title.charAt(0)}
                 </div>
             }
