@@ -2,6 +2,18 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { getAboutContent, type AboutContent } from '../api/about';
+import { getFeaturedLaurels } from '../api/laurels';
+import type { FeaturedLaurel } from '../api/types';
+
+// Behind-the-scenes gallery (optimised images live in /public/photos)
+const galleryPhotos = [
+  { src: '/photos/bts-on-set.jpg',        caption: 'On set' },
+  { src: '/photos/southend-festival.jpg', caption: 'Southend-on-Sea Film Festival' },
+  { src: '/photos/bts-screening.jpg',     caption: 'Screening event' },
+  { src: '/photos/bts-on-set-4.jpg',      caption: 'In production' },
+  { src: '/photos/bts-on-set-2.jpg',      caption: 'Behind the scenes' },
+  { src: '/photos/bts-on-set-3.jpg',      caption: 'Directing' },
+];
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 20 },
@@ -74,6 +86,7 @@ const FALLBACK: AboutContent = {
 
 export default function About() {
   const [content, setContent] = useState<AboutContent>(FALLBACK);
+  const [laurels, setLaurels] = useState<FeaturedLaurel[]>([]);
 
   useEffect(() => {
     getAboutContent().then((data) => {
@@ -82,6 +95,7 @@ export default function About() {
         setContent(data);
       }
     });
+    getFeaturedLaurels().then(setLaurels).catch(() => setLaurels([]));
   }, []);
 
   const { bioParagraphs, pullQuotes, credits, recognition, education } = content;
@@ -95,17 +109,36 @@ export default function About() {
       {/* ── Header ──────────────────────────────────────────────────────────── */}
       <section className="pt-32 pb-20 px-6" style={{ background: 'var(--color-bg-dark)' }}>
         <div className="container mx-auto max-w-4xl">
-          <motion.div {...fadeUp(0)} className="eyebrow" style={{ color: 'rgba(250,247,248,0.55)' }}>
-            About
-          </motion.div>
-          <motion.h1
-            {...fadeUp(0.1)}
-            className="font-display font-light text-5xl md:text-6xl text-[--color-text-inverse] mt-3 leading-tight"
-          >
-            Multi-hyphenate<br />filmmaker.
-          </motion.h1>
+          <div className="grid md:grid-cols-[1fr_auto] gap-10 md:gap-12 items-start">
+            {/* Text column */}
+            <div>
+              <motion.div {...fadeUp(0)} className="eyebrow" style={{ color: 'rgba(250,247,248,0.55)' }}>
+                About
+              </motion.div>
+              <motion.h1
+                {...fadeUp(0.1)}
+                className="font-display font-light text-5xl md:text-6xl text-[--color-text-inverse] mt-3 leading-tight"
+              >
+                Multi-hyphenate<br />filmmaker.
+              </motion.h1>
+            </div>
+
+            {/* Profile photo */}
+            <motion.div
+              {...fadeUp(0.2)}
+              className="w-40 sm:w-48 md:w-56 flex-shrink-0 mx-auto md:mx-0"
+            >
+              <img
+                src="/photos/profile.jpg"
+                alt="Kat Rollinson"
+                className="w-full aspect-[3/4] object-cover"
+                style={{ border: '1px solid rgba(250,247,248,0.15)' }}
+              />
+            </motion.div>
+          </div>
+
           {bioParagraphs.length > 0 && (
-            <motion.div {...fadeUp(0.2)} className="mt-8 space-y-5 max-w-2xl">
+            <motion.div {...fadeUp(0.3)} className="mt-10 space-y-5 max-w-2xl">
               {bioParagraphs.map((p, i) => (
                 <p key={i} className="font-body text-base font-light leading-relaxed"
                   style={{ color: 'rgba(250,247,242,0.8)' }}>
@@ -187,28 +220,69 @@ export default function About() {
         </section>
       )}
 
-      {/* ── Awards ──────────────────────────────────────────────────────────── */}
-      {recognition.length > 0 && (
+      {/* ── Recognition ─────────────────────────────────────────────────────── */}
+      {/* Driven by laurels flagged "Feature on About page" in Films/Writing.   */}
+      {/* Falls back to the manually-entered recognition list if none exist.    */}
+      {(laurels.length > 0 || recognition.length > 0) && (
         <section className="py-16 px-6" style={{ background: 'var(--color-bg-dark)' }}>
           <div className="container mx-auto max-w-4xl">
             <motion.div {...fadeUp(0)} className="eyebrow" style={{ color: 'rgba(250,247,248,0.55)' }}>
               Recognition
             </motion.div>
-            <div className="mt-8 grid sm:grid-cols-3 gap-8">
-              {recognition.map(({ title, body, year }, i) => (
-                <motion.div key={i} {...fadeUp(i * 0.1)} className="flex flex-col gap-2 pl-4"
-                  style={{ borderLeft: '2px solid rgba(250,247,248,0.35)' }}>
-                  <span className="font-body text-[10px] tracking-[0.18em] uppercase"
-                    style={{ color: 'rgba(250,247,248,0.6)' }}>
-                    {title} · {year}
-                  </span>
-                  <span className="font-body text-sm font-light"
-                    style={{ color: 'rgba(250,247,242,0.9)' }}>
-                    {body}
-                  </span>
-                </motion.div>
-              ))}
-            </div>
+
+            {laurels.length > 0 ? (
+              <div className="mt-10 flex flex-wrap items-end gap-x-10 gap-y-8">
+                {laurels.map((l, i) => {
+                  const sub = [l.category, l.year].filter(Boolean).join(' · ');
+                  return (
+                    <motion.div key={l.id} {...fadeUp(i * 0.08)} className="flex flex-col items-center text-center gap-3">
+                      {l.laurelUrl ? (
+                        <img src={l.laurelUrl} alt={l.name} className="h-24 w-auto object-contain" />
+                      ) : (
+                        <div className="flex flex-col gap-1 px-6 py-3"
+                          style={{ border: '1px solid rgba(250,247,248,0.25)' }}>
+                          <span className="font-display text-lg" style={{ color: 'var(--color-text-inverse)' }}>
+                            {l.name}
+                          </span>
+                        </div>
+                      )}
+                      <div className="flex flex-col gap-0.5 max-w-[12rem]">
+                        <span className="font-body text-[11px] tracking-wide"
+                          style={{ color: 'rgba(250,247,248,0.85)' }}>
+                          {l.name}
+                        </span>
+                        {sub && (
+                          <span className="font-body text-[10px] tracking-wide"
+                            style={{ color: 'rgba(250,247,248,0.5)' }}>
+                            {sub}
+                          </span>
+                        )}
+                        <span className="font-body text-[10px] italic"
+                          style={{ color: 'rgba(201,169,166,0.85)' }}>
+                          {l.projectTitle}
+                        </span>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="mt-8 grid sm:grid-cols-3 gap-8">
+                {recognition.map(({ title, body, year }, i) => (
+                  <motion.div key={i} {...fadeUp(i * 0.1)} className="flex flex-col gap-2 pl-4"
+                    style={{ borderLeft: '2px solid rgba(250,247,248,0.35)' }}>
+                    <span className="font-body text-[10px] tracking-[0.18em] uppercase"
+                      style={{ color: 'rgba(250,247,248,0.6)' }}>
+                      {title} · {year}
+                    </span>
+                    <span className="font-body text-sm font-light"
+                      style={{ color: 'rgba(250,247,242,0.9)' }}>
+                      {body}
+                    </span>
+                  </motion.div>
+                ))}
+              </div>
+            )}
           </div>
         </section>
       )}
@@ -242,6 +316,39 @@ export default function About() {
           </div>
         </section>
       )}
+
+      {/* ── Behind the scenes gallery ───────────────────────────────────────── */}
+      <section className="section px-6" style={{ background: 'var(--color-bg-elevated)' }}>
+        <div className="container mx-auto max-w-4xl">
+          <motion.div {...fadeUp(0)} className="eyebrow">Behind the Scenes</motion.div>
+          <div className="mt-10 grid grid-cols-2 md:grid-cols-3 gap-4">
+            {galleryPhotos.map((photo, i) => (
+              <motion.figure
+                key={photo.src}
+                {...fadeUp(i * 0.06)}
+                className="group relative overflow-hidden"
+                style={{ background: 'var(--color-bg-dark)' }}
+              >
+                <img
+                  src={photo.src}
+                  alt={photo.caption}
+                  loading="lazy"
+                  className="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <figcaption
+                  className="absolute inset-x-0 bottom-0 px-3 py-2 font-body text-[11px] tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{
+                    color: 'var(--color-text-inverse)',
+                    background: 'linear-gradient(to top, rgba(0,40,40,0.85), rgba(0,40,40,0))',
+                  }}
+                >
+                  {photo.caption}
+                </figcaption>
+              </motion.figure>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* ── CTA ─────────────────────────────────────────────────────────────── */}
       <section className="py-20 px-6 text-center" style={{ background: 'var(--color-bg-cream)' }}>

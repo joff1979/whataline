@@ -7,6 +7,7 @@ import {
   adminReorderWritingProjects,
   adminUpload,
 } from '../../api/writing';
+import AwardEditor from '../../components/admin/AwardEditor';
 import type { WritingProject, UpsertWritingProject } from '../../api/types';
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
@@ -23,72 +24,6 @@ const emptyForm = (): UpsertWritingProject => ({
   sortOrder: 0,
   awards: [],
 });
-
-// ── Award list editor ──────────────────────────────────────────────────────────
-
-interface AwardEditorProps {
-  awards: UpsertWritingProject['awards'];
-  onChange: (awards: UpsertWritingProject['awards']) => void;
-}
-
-function AwardEditor({ awards, onChange }: AwardEditorProps) {
-  const add = () => onChange([...awards, { name: '', category: null, year: null }]);
-  const remove = (i: number) => onChange(awards.filter((_, idx) => idx !== i));
-  const update = (i: number, field: string, value: string) =>
-    onChange(
-      awards.map((a, idx) =>
-        idx === i
-          ? { ...a, [field]: value || null }
-          : a
-      )
-    );
-
-  return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between mb-1">
-        <span className="font-body text-xs tracking-wide uppercase"
-          style={{ color: 'var(--color-text-muted)' }}>
-          Awards / Accolades
-        </span>
-        <button type="button" onClick={add}
-          className="font-body text-xs tracking-wide uppercase rounded-none px-3 py-1"
-          style={{ color: 'var(--color-accent)', border: '1px solid var(--color-accent)' }}>
-          + Add
-        </button>
-      </div>
-      {awards.map((a, i) => (
-        <div key={i} className="grid grid-cols-[1fr_1fr_5rem_auto] gap-2 items-center">
-          <input
-            value={a.name}
-            onChange={(e) => update(i, 'name', e.target.value)}
-            placeholder="Award"
-            className="border px-2 py-1 font-body text-sm outline-none rounded-none"
-            style={{ borderColor: 'var(--color-border-strong)' }}
-          />
-          <input
-            value={a.category ?? ''}
-            onChange={(e) => update(i, 'category', e.target.value)}
-            placeholder="Festival"
-            className="border px-2 py-1 font-body text-sm outline-none rounded-none"
-            style={{ borderColor: 'var(--color-border-strong)' }}
-          />
-          <input
-            value={a.year ?? ''}
-            onChange={(e) => update(i, 'year', e.target.value)}
-            placeholder="Year"
-            type="number"
-            className="border px-2 py-1 font-body text-sm outline-none rounded-none"
-            style={{ borderColor: 'var(--color-border-strong)' }}
-          />
-          <button type="button" onClick={() => remove(i)}
-            className="font-body text-xs text-red-500 rounded-none px-2">
-            ✕
-          </button>
-        </div>
-      ))}
-    </div>
-  );
-}
 
 // ── Project form (modal-style inline) ─────────────────────────────────────────
 
@@ -325,7 +260,8 @@ export default function AdminWriting() {
               status:   editing.status,
               featured: editing.featured,
               sortOrder: editing.sortOrder,
-              awards:   editing.awards.map(({ name, category, year }) => ({ name, category, year })),
+              awards:   editing.awards.map(({ name, category, year, laurelUrl, featured }) =>
+                ({ name, category, year, laurelUrl, featured })),
             }}
             onSave={(data) => handleUpdate(editing.id, data)}
             onCancel={() => setEditing(null)}

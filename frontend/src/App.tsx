@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 
 import Nav from './components/layout/Nav';
+import Footer from './components/layout/Footer';
 import AdminLayout from './components/layout/AdminLayout';
 import RequireAuth from './components/ui/RequireAuth';
 
@@ -20,6 +21,7 @@ import AdminServices from './pages/admin/AdminServices';
 import AdminTestimonials from './pages/admin/AdminTestimonials';
 import AdminContact  from './pages/admin/AdminContact';
 import AdminAbout    from './pages/admin/AdminAbout';
+import AdminSocials  from './pages/admin/AdminSocials';
 import AdminSettings from './pages/admin/AdminSettings';
 
 // AnimatePresence needs to read location inside the router
@@ -58,11 +60,13 @@ function AnimatedRoutes() {
             <Route path="services"     element={<AdminServices />} />
             <Route path="testimonials" element={<AdminTestimonials />} />
             <Route path="about"        element={<AdminAbout />} />
+            <Route path="socials"      element={<AdminSocials />} />
             <Route path="contact"      element={<AdminContact />} />
             <Route path="settings"     element={<AdminSettings />} />
           </Route>
         </Routes>
       </AnimatePresence>
+      {!isAdmin && location.pathname !== '/admin/login' && <Footer />}
     </>
   );
 }

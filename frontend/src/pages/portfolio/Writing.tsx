@@ -115,24 +115,33 @@ function PosterCard({ project }: { project: WritingProject }) {
           )}
         </div>
 
-        {/* Award pills — name · festival · year */}
+        {/* Award laurels / pills — name · festival · year */}
         {project.awards.length > 0 && (
-          <div className="flex flex-wrap gap-1">
-            {project.awards.map(a => (
-              <span
-                key={a.id}
-                className="font-body text-[10px] tracking-wide px-2 py-0.5"
-                style={{
-                  background: 'var(--color-accent-subtle)',
-                  color: 'var(--color-accent)',
-                  border: '1px solid var(--color-accent-light)',
-                }}
-              >
-                {a.name}
-                {a.category ? ` · ${a.category}` : ''}
-                {a.year ? ` · ${a.year}` : ''}
-              </span>
-            ))}
+          <div className="flex flex-wrap items-center gap-1">
+            {project.awards.map(a => {
+              const label = [a.name, a.category, a.year].filter(Boolean).join(' · ');
+              return a.laurelUrl ? (
+                <img
+                  key={a.id}
+                  src={a.laurelUrl}
+                  alt={label}
+                  title={label}
+                  className="h-12 w-auto object-contain mr-1"
+                />
+              ) : (
+                <span
+                  key={a.id}
+                  className="font-body text-[10px] tracking-wide px-2 py-0.5"
+                  style={{
+                    background: 'var(--color-accent-subtle)',
+                    color: 'var(--color-accent)',
+                    border: '1px solid var(--color-accent-light)',
+                  }}
+                >
+                  {label}
+                </span>
+              );
+            })}
           </div>
         )}
       </div>

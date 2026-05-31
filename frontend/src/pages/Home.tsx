@@ -1,6 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { getFeaturedShowcase } from '../api/showcase';
+import type { ShowcaseItem } from '../api/types';
 
 // ── YouTube IFrame API types ───────────────────────────────────────────────────
 declare global {
@@ -41,9 +43,72 @@ const quickLinks = [
   { to: '/contact',           label: 'Contact'  },
 ];
 
+function ShowcaseCard({ item }: { item: ShowcaseItem }) {
+  const inner = (
+    <motion.div
+      className="cursor-pointer"
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="relative overflow-hidden" style={{ background: 'var(--color-bg-warm-dark)' }}>
+        <div className="aspect-[2/3] relative overflow-hidden">
+          {item.posterUrl ? (
+            <img src={item.posterUrl} alt={item.title} loading="lazy"
+              className="portfolio w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center font-display italic text-6xl"
+              style={{ background: 'linear-gradient(160deg, #004040, #008080 60%, #C9A9A6)', color: 'rgba(255,255,255,0.15)' }}>
+              {item.title.charAt(0)}
+            </div>
+          )}
+          <div className="absolute inset-0 flex flex-col justify-end p-5 home-poster-overlay"
+            style={{ background: 'linear-gradient(to top, rgba(0,40,40,0.95) 0%, rgba(0,40,40,0) 60%)' }}>
+            <div className="font-display text-xl font-semibold" style={{ color: 'var(--color-text-inverse)' }}>
+              {item.title}
+            </div>
+            {item.logline && (
+              <div className="font-display italic text-sm mt-1 mb-2 leading-snug"
+                style={{ color: 'rgba(250,247,242,0.75)' }}>
+                {item.logline}
+              </div>
+            )}
+            <div className="font-body text-[10px] tracking-widest uppercase"
+              style={{ color: 'var(--color-accent-light)' }}>
+              {item.kind === 'film' ? 'Film' : 'Script'} →
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="pt-3">
+        <div className="font-display text-lg font-semibold" style={{ color: 'var(--color-text-primary)' }}>
+          {item.title}
+        </div>
+        {(item.format || item.genre) && (
+          <div className="font-body text-xs mt-0.5" style={{ color: 'var(--color-text-muted)' }}>
+            {[item.format, item.genre].filter(Boolean).join(' · ')}
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+
+  // Link to the external film/script if present, otherwise to the portfolio page
+  if (item.linkUrl) {
+    return <a href={item.linkUrl} target="_blank" rel="noopener noreferrer" className="block no-underline">{inner}</a>;
+  }
+  return <Link to={item.href} className="block no-underline">{inner}</Link>;
+}
+
 export default function Home() {
   const playerRef = useRef<YTPlayer | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [showcase, setShowcase] = useState<ShowcaseItem[]>([]);
+
+  useEffect(() => {
+    getFeaturedShowcase().then(setShowcase).catch(() => setShowcase([]));
+  }, []);
 
   useEffect(() => {
     // Load the IFrame API script once
@@ -216,6 +281,44 @@ export default function Home() {
           />
         </motion.div>
       </section>
+
+      {/* ── Featured work showcase ──────────────────────────────────────────── */}
+      {showcase.length > 0 && (
+        <section className="px-6 py-20" style={{ background: 'var(--color-bg-cream)' }}>
+          <style>{`
+            .home-poster-overlay { transform: translateY(60%); transition: transform 300ms ease-out; }
+            .cursor-pointer:hover .home-poster-overlay { transform: translateY(0); }
+            .cursor-pointer:hover img.portfolio { filter: none; transform: scale(1.03); }
+            img.portfolio { transition: filter 400ms ease, transform 500ms ease; }
+          `}</style>
+          <div className="container mx-auto" style={{ maxWidth: '72rem' }}>
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="eyebrow"
+            >
+              Featured Work
+            </motion.div>
+            <motion.h2
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="font-display font-light text-3xl md:text-4xl mb-10"
+              style={{ color: 'var(--color-text-primary)' }}
+            >
+              Selected films &amp; scripts
+            </motion.h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {showcase.map((item) => (
+                <ShowcaseCard key={`${item.kind}-${item.id}`} item={item} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── Quick-nav strip ─────────────────────────────────────────────────── */}
       <section

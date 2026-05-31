@@ -21,6 +21,16 @@ function SkeletonCard() {
 
 function AwardPill({ award }: { award: import('../../api/types').Award }) {
   const label = [award.name, award.category, award.year].filter(Boolean).join(' · ');
+  if (award.laurelUrl) {
+    return (
+      <img
+        src={award.laurelUrl}
+        alt={label}
+        title={label}
+        className="inline-block h-12 w-auto object-contain mr-2 mt-1 align-middle"
+      />
+    );
+  }
   return (
     <span
       className="inline-block font-body text-[10px] tracking-wide px-2 py-0.5 mr-1 mt-1"

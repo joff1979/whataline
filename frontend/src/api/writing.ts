@@ -12,7 +12,7 @@ const SELECT = `
   status,
   featured,
   sortOrder:sort_order,
-  awards (id, name, category, year)
+  awards (id, name, category, year, laurelUrl:laurel_url, featured)
 `;
 
 // ── Public ────────────────────────────────────────────────────────────────
@@ -121,6 +121,8 @@ async function syncWritingAwards(
       name: a.name,
       category: a.category,
       year: a.year,
+      laurel_url: a.laurelUrl,
+      featured: a.featured,
       writing_project_id: writingProjectId,
     }))
   );

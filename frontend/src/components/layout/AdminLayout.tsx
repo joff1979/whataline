@@ -7,6 +7,7 @@ const navItems = [
   { to: '/admin/services',     label: 'Services'     },
   { to: '/admin/testimonials', label: 'Testimonials' },
   { to: '/admin/about',        label: 'About Page'   },
+  { to: '/admin/socials',      label: 'Social Links' },
   { to: '/admin/contact',      label: 'Inbox'        },
   { to: '/admin/settings',     label: 'Settings'     },
 ];
