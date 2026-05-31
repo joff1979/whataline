@@ -31,9 +31,11 @@ function AwardPill({ name }: { name: string }) {
 }
 
 function PosterCard({ project }: { project: FilmProject }) {
-  return (
+  const linkUrl = project.filmUrl || project.trailerUrl || null;
+
+  const inner = (
     <motion.div
-      className="cursor-pointer"
+      className={linkUrl ? 'cursor-pointer' : ''}
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -60,29 +62,31 @@ function PosterCard({ project }: { project: FilmProject }) {
             </div>
           )}
 
-          <div
-            className="absolute inset-0 flex flex-col justify-end p-5 poster-overlay"
-            style={{ background: 'linear-gradient(to top, rgba(0,64,64,0.95) 0%, rgba(0,64,64,0) 60%)' }}
-          >
-            <div className="font-display text-xl font-semibold" style={{ color: 'var(--color-text-inverse)' }}>
-              {project.title}
-            </div>
-            {project.logline && (
-              <div className="font-display italic text-sm mt-1 mb-3 leading-snug"
-                style={{ color: 'rgba(250,247,242,0.75)' }}>
-                {project.logline}
+          {linkUrl && (
+            <div
+              className="absolute inset-0 flex flex-col justify-end p-5 poster-overlay"
+              style={{ background: 'linear-gradient(to top, rgba(0,64,64,0.95) 0%, rgba(0,64,64,0) 60%)' }}
+            >
+              <div className="font-display text-xl font-semibold" style={{ color: 'var(--color-text-inverse)' }}>
+                {project.title}
               </div>
-            )}
-            {project.year && (
-              <div className="font-body text-xs mb-1" style={{ color: 'rgba(250,247,242,0.5)' }}>
-                {project.year}
+              {project.logline && (
+                <div className="font-display italic text-sm mt-1 mb-3 leading-snug"
+                  style={{ color: 'rgba(250,247,242,0.75)' }}>
+                  {project.logline}
+                </div>
+              )}
+              {project.year && (
+                <div className="font-body text-xs mb-1" style={{ color: 'rgba(250,247,242,0.5)' }}>
+                  {project.year}
+                </div>
+              )}
+              <div className="font-body text-xs tracking-widest uppercase"
+                style={{ color: 'var(--color-accent-light)' }}>
+                {project.filmUrl ? 'Watch Film →' : 'Watch Trailer →'}
               </div>
-            )}
-            <div className="font-body text-xs tracking-widest uppercase"
-              style={{ color: 'var(--color-accent-light)' }}>
-              View Project →
             </div>
-          </div>
+          )}
         </div>
       </div>
 
@@ -97,6 +101,16 @@ function PosterCard({ project }: { project: FilmProject }) {
       </div>
     </motion.div>
   );
+
+  if (linkUrl) {
+    return (
+      <a href={linkUrl} target="_blank" rel="noopener noreferrer" className="block no-underline">
+        {inner}
+      </a>
+    );
+  }
+
+  return inner;
 }
 
 export default function Films() {
