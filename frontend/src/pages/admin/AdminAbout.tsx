@@ -109,30 +109,28 @@ function PullQuotesEditor({
 
 // ── Credits editor ────────────────────────────────────────────────────────────
 
-function CreditItemRow({
-  item, onChange, onRemove,
-}: { item: CreditItem; onChange: (v: CreditItem) => void; onRemove: () => void }) {
-  return (
-    <div className="grid grid-cols-[1fr_1fr_5rem_auto] gap-2 items-center mb-2">
-      <input value={item.title} onChange={(e) => onChange({ ...item, title: e.target.value })}
-        placeholder="Title" className={inputCls} style={inputSt} />
-      <input value={item.company ?? ''} onChange={(e) => onChange({ ...item, company: e.target.value || undefined })}
-        placeholder="Company (optional)" className={inputCls} style={inputSt} />
-      <input value={item.year ?? ''} onChange={(e) => onChange({ ...item, year: e.target.value || undefined })}
-        placeholder="Year" className={inputCls} style={inputSt} />
-      <button type="button" onClick={onRemove} className={rmBtnCls}>✕</button>
-    </div>
-  );
-}
-
 function CreditsEditor({
   value, onChange,
 }: { value: CreditGroup[]; onChange: (v: CreditGroup[]) => void }) {
+  const [draggingGroup, setDraggingGroup] = useState<number | null>(null);
+  const [draggingItem,  setDraggingItem]  = useState<{ gi: number; ii: number } | null>(null);
+
+  // ── Group helpers ────────────────────────────────────────────────────────
   const updateGroup = (i: number, g: CreditGroup) =>
     onChange(value.map((v, j) => j === i ? g : v));
   const removeGroup = (i: number) => onChange(value.filter((_, j) => j !== i));
   const addGroup    = () => onChange([...value, { role: '', items: [] }]);
 
+  const handleGroupDrop = (targetIdx: number) => {
+    if (draggingGroup === null || draggingGroup === targetIdx) { setDraggingGroup(null); return; }
+    const arr = [...value];
+    const [moved] = arr.splice(draggingGroup, 1);
+    arr.splice(targetIdx, 0, moved);
+    onChange(arr);
+    setDraggingGroup(null);
+  };
+
+  // ── Item helpers ─────────────────────────────────────────────────────────
   const updateItem = (gi: number, ii: number, item: CreditItem) =>
     updateGroup(gi, { ...value[gi], items: value[gi].items.map((it, j) => j === ii ? item : it) });
   const removeItem = (gi: number, ii: number) =>
@@ -140,45 +138,94 @@ function CreditsEditor({
   const addItem    = (gi: number) =>
     updateGroup(gi, { ...value[gi], items: [...value[gi].items, { title: '' }] });
 
+  const handleItemDrop = (gi: number, targetIdx: number) => {
+    if (!draggingItem || draggingItem.gi !== gi || draggingItem.ii === targetIdx) {
+      setDraggingItem(null); return;
+    }
+    const items = [...value[gi].items];
+    const [moved] = items.splice(draggingItem.ii, 1);
+    items.splice(targetIdx, 0, moved);
+    updateGroup(gi, { ...value[gi], items });
+    setDraggingItem(null);
+  };
+
   return (
     <SectionCard title="Selected Credits">
+      <p className="font-body text-xs mb-4" style={{ color: 'var(--color-text-muted)' }}>
+        Drag the <strong>⠿</strong> handle to reorder role groups or individual credits.
+      </p>
+
       {value.map((group, gi) => (
-        <div key={gi} className="mb-6 p-4" style={{ background: 'rgba(0,64,64,0.04)', border: '1px solid var(--color-border-strong)' }}>
+        <div
+          key={gi}
+          draggable
+          onDragStart={(e) => { e.stopPropagation(); setDraggingGroup(gi); }}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => { e.stopPropagation(); handleGroupDrop(gi); }}
+          onDragEnd={() => setDraggingGroup(null)}
+          className="mb-6 p-4 transition-opacity"
+          style={{
+            background: 'rgba(0,64,64,0.04)',
+            border: '1px solid var(--color-border-strong)',
+            opacity: draggingGroup === gi ? 0.4 : 1,
+            cursor: 'grab',
+          }}
+        >
+          {/* Role row */}
           <div className="flex items-center gap-3 mb-3">
+            <span className="font-body text-sm flex-shrink-0" style={{ color: 'var(--color-text-muted)', cursor: 'grab' }}>⠿</span>
             <input
               value={group.role}
               onChange={(e) => updateGroup(gi, { ...group, role: e.target.value })}
               placeholder="Role (e.g. Script Supervisor)"
               className="flex-1 border px-3 py-2 font-body text-sm font-medium outline-none rounded-none"
-              style={{ ...inputSt, borderColor: 'var(--color-accent)', borderWidth: '1px' }}
+              style={{ ...inputSt, borderColor: 'var(--color-accent)' }}
             />
             <button type="button" onClick={() => removeGroup(gi)}
-              className="font-body text-xs text-red-400 px-3 py-2 rounded-none border border-red-200">
+              className="font-body text-xs text-red-400 px-3 py-2 rounded-none border border-red-200 flex-shrink-0">
               Remove Role
             </button>
           </div>
 
-          <div className="ml-2">
-            <div className="grid grid-cols-[1fr_1fr_5rem_auto] gap-2 mb-1">
+          {/* Items */}
+          <div className="ml-6">
+            <div className="grid grid-cols-[1.5rem_1fr_1fr_5rem_auto] gap-2 mb-1">
+              <span />
               <span className={`${labelCls} !mb-0`} style={labelSt}>Title</span>
               <span className={`${labelCls} !mb-0`} style={labelSt}>Company</span>
               <span className={`${labelCls} !mb-0`} style={labelSt}>Year</span>
               <span />
             </div>
+
             {group.items.map((item, ii) => (
-              <CreditItemRow
+              <div
                 key={ii}
-                item={item}
-                onChange={(v) => updateItem(gi, ii, v)}
-                onRemove={() => removeItem(gi, ii)}
-              />
+                draggable
+                onDragStart={(e) => { e.stopPropagation(); setDraggingItem({ gi, ii }); }}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => { e.stopPropagation(); handleItemDrop(gi, ii); }}
+                onDragEnd={() => setDraggingItem(null)}
+                className="grid grid-cols-[1.5rem_1fr_1fr_5rem_auto] gap-2 items-center mb-2 transition-opacity"
+                style={{ opacity: draggingItem?.gi === gi && draggingItem?.ii === ii ? 0.4 : 1 }}
+              >
+                <span className="font-body text-sm text-center" style={{ color: 'var(--color-text-muted)', cursor: 'grab' }}>⠿</span>
+                <input value={item.title} onChange={(e) => updateItem(gi, ii, { ...item, title: e.target.value })}
+                  placeholder="Title" className={inputCls} style={inputSt} />
+                <input value={item.company ?? ''} onChange={(e) => updateItem(gi, ii, { ...item, company: e.target.value || undefined })}
+                  placeholder="Company (optional)" className={inputCls} style={inputSt} />
+                <input value={item.year ?? ''} onChange={(e) => updateItem(gi, ii, { ...item, year: e.target.value || undefined })}
+                  placeholder="Year" className={inputCls} style={inputSt} />
+                <button type="button" onClick={() => removeItem(gi, ii)} className={rmBtnCls}>✕</button>
+              </div>
             ))}
+
             <button type="button" onClick={() => addItem(gi)} className={`${addBtnCls} mt-1`} style={addBtnSt}>
               + Add Credit
             </button>
           </div>
         </div>
       ))}
+
       <button type="button" onClick={addGroup} className={addBtnCls} style={addBtnSt}>
         + Add Role Group
       </button>
