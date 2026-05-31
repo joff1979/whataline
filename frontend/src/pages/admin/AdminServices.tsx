@@ -22,6 +22,7 @@ interface SamplesEditorProps {
 
 function SamplesEditor({ samples, onChange }: SamplesEditorProps) {
   const [uploading, setUploading] = useState<number | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const add = () => onChange([...samples, { title: '', description: null, fileUrl: null }]);
   const remove = (i: number) => onChange(samples.filter((_, idx) => idx !== i));
@@ -32,8 +33,15 @@ function SamplesEditor({ samples, onChange }: SamplesEditorProps) {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(i);
-    try { update(i, 'fileUrl', await adminUpload(file)); }
-    finally { setUploading(null); }
+    setUploadError(null);
+    try {
+      const url = await adminUpload(file);
+      update(i, 'fileUrl', url);
+    } catch (err) {
+      setUploadError(`Upload failed: ${String(err)}`);
+    } finally {
+      setUploading(null);
+    }
   };
 
   return (
@@ -76,8 +84,14 @@ function SamplesEditor({ samples, onChange }: SamplesEditorProps) {
               className="font-body text-xs" disabled={uploading === i} />
             {uploading === i && <span className="font-body text-xs" style={{ color: 'var(--color-text-muted)' }}>Uploading…</span>}
           </div>
+          {uploadError && i === uploading && (
+            <p className="font-body text-xs text-red-600 mt-1">{uploadError}</p>
+          )}
         </div>
       ))}
+      {uploadError && uploading === null && (
+        <p className="font-body text-xs text-red-600 mt-2">{uploadError}</p>
+      )}
     </div>
   );
 }

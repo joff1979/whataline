@@ -27,7 +27,7 @@ function PullQuote({ testimonial }: { testimonial: Testimonial }) {
       </div>
       <blockquote
         className="font-display italic text-2xl leading-relaxed"
-        style={{ color: 'var(--color-text-secondary)' }}
+        style={{ color: 'var(--color-text-secondary)', whiteSpace: 'pre-wrap' }}
       >
         {testimonial.quoteText}
       </blockquote>

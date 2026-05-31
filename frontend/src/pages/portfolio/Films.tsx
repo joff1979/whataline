@@ -19,13 +19,18 @@ function SkeletonCard() {
   );
 }
 
-function AwardPill({ name }: { name: string }) {
+function AwardPill({ award }: { award: import('../../api/types').Award }) {
+  const label = [award.name, award.category, award.year].filter(Boolean).join(' · ');
   return (
     <span
-      className="inline-block font-body text-xs tracking-wide px-3 py-1 rounded-full mr-2 mt-2"
-      style={{ background: 'var(--color-accent-subtle)', color: 'var(--color-text-secondary)' }}
+      className="inline-block font-body text-[10px] tracking-wide px-2 py-0.5 mr-1 mt-1"
+      style={{
+        background: 'var(--color-accent-subtle)',
+        color: 'var(--color-accent)',
+        border: '1px solid var(--color-accent-light)',
+      }}
     >
-      {name}
+      {label}
     </span>
   );
 }
@@ -97,7 +102,7 @@ function PosterCard({ project }: { project: FilmProject }) {
             {[project.format, project.year].filter(Boolean).join(' · ')}
           </div>
         )}
-        {project.awards.map((a) => <AwardPill key={a.id} name={a.name} />)}
+        {project.awards.map((a) => <AwardPill key={a.id} award={a} />)}
       </div>
     </motion.div>
   );

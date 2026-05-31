@@ -95,7 +95,7 @@ export default function About() {
       {/* ── Header ──────────────────────────────────────────────────────────── */}
       <section className="pt-32 pb-20 px-6" style={{ background: 'var(--color-bg-dark)' }}>
         <div className="container mx-auto max-w-3xl">
-          <motion.div {...fadeUp(0)} className="eyebrow" style={{ color: 'var(--color-accent-light)', opacity: 0.7 }}>
+          <motion.div {...fadeUp(0)} className="eyebrow" style={{ color: 'rgba(250,247,248,0.55)' }}>
             About
           </motion.div>
           <motion.h1
@@ -191,20 +191,19 @@ export default function About() {
       {recognition.length > 0 && (
         <section className="py-16 px-6" style={{ background: 'var(--color-bg-dark)' }}>
           <div className="container mx-auto">
-            <motion.div {...fadeUp(0)} className="eyebrow"
-              style={{ color: 'var(--color-accent-light)', opacity: 0.7 }}>
+            <motion.div {...fadeUp(0)} className="eyebrow" style={{ color: 'rgba(250,247,248,0.55)' }}>
               Recognition
             </motion.div>
             <div className="mt-8 grid sm:grid-cols-3 gap-8 max-w-3xl">
               {recognition.map(({ title, body, year }, i) => (
                 <motion.div key={i} {...fadeUp(i * 0.1)} className="flex flex-col gap-2 pl-4"
-                  style={{ borderLeft: '2px solid var(--color-accent)' }}>
+                  style={{ borderLeft: '2px solid rgba(250,247,248,0.35)' }}>
                   <span className="font-body text-[10px] tracking-[0.18em] uppercase"
-                    style={{ color: 'var(--color-accent-light)' }}>
+                    style={{ color: 'rgba(250,247,248,0.6)' }}>
                     {title} · {year}
                   </span>
                   <span className="font-body text-sm font-light"
-                    style={{ color: 'rgba(250,247,242,0.85)' }}>
+                    style={{ color: 'rgba(250,247,242,0.9)' }}>
                     {body}
                   </span>
                 </motion.div>

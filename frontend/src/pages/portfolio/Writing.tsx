@@ -3,134 +3,154 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { getWritingProjects } from '../../api/writing';
 import type { WritingProject } from '../../api/types';
 
-// ── Format badge colours ───────────────────────────────────────────────────────
+// ── Format badge colour ────────────────────────────────────────────────────────
 const formatColour: Record<string, string> = {
-  feature:  '#C9A9A6',
-  short:    '#008080',
-  pilot:    '#005555',
-  series:   '#005555',
-  default:  '#008080',
+  feature: '#C9A9A6',
+  short:   '#008080',
+  pilot:   '#005555',
+  series:  '#005555',
+  default: '#008080',
 };
-
 function formatBg(format: string | null) {
   const key = (format ?? '').toLowerCase();
-  return Object.keys(formatColour).find(k => key.includes(k))
-    ? formatColour[Object.keys(formatColour).find(k => key.includes(k))!]
-    : formatColour.default;
+  const match = Object.keys(formatColour).find(k => key.includes(k));
+  return match ? formatColour[match] : formatColour.default;
 }
 
 // ── Skeleton ───────────────────────────────────────────────────────────────────
-function SkeletonRow() {
+function SkeletonCard() {
   return (
-    <div className="animate-pulse py-8 border-b" style={{ borderColor: 'rgba(0,64,64,0.1)' }}>
-      <div className="h-3 w-16 rounded-full mb-3" style={{ background: 'rgba(0,64,64,0.12)' }} />
-      <div className="h-6 w-1/3 mb-2" style={{ background: 'rgba(0,64,64,0.12)' }} />
-      <div className="h-4 w-2/3" style={{ background: 'rgba(0,64,64,0.08)' }} />
+    <div className="animate-pulse">
+      <div className="aspect-[2/3] rounded-none" style={{ background: 'rgba(0,64,64,0.12)' }} />
+      <div className="mt-3 h-5 w-3/4" style={{ background: 'rgba(0,64,64,0.12)' }} />
+      <div className="mt-2 h-3 w-1/2" style={{ background: 'rgba(0,64,64,0.08)' }} />
     </div>
   );
 }
 
-// ── Script card ────────────────────────────────────────────────────────────────
-function ScriptCard({ project, index }: { project: WritingProject; index: number }) {
+// ── Poster card ────────────────────────────────────────────────────────────────
+function PosterCard({ project }: { project: WritingProject }) {
+  const linkUrl = project.scriptUrl ?? null;
 
-  return (
-    <motion.article
-      initial={{ opacity: 0, y: 20 }}
+  const inner = (
+    <motion.div
+      className={linkUrl ? 'cursor-pointer' : ''}
+      initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.5, delay: index * 0.05 }}
-      className="py-8 border-b group"
-      style={{ borderColor: 'rgba(0,64,64,0.1)' }}
+      transition={{ duration: 0.5 }}
     >
-      {/* Top row: format + genre + awards */}
-      <div className="flex flex-wrap items-center gap-2 mb-3">
-        {project.format && (
-          <span
-            className="font-body text-[10px] tracking-[0.2em] uppercase px-2.5 py-1"
-            style={{
-              background: formatBg(project.format),
-              color: 'rgba(250,247,242,0.95)',
-            }}
-          >
-            {project.format}
-          </span>
-        )}
-        {project.genre && (
-          <span
-            className="font-body text-[10px] tracking-[0.15em] uppercase"
-            style={{ color: 'var(--color-text-secondary)' }}
-          >
-            {project.genre}
-          </span>
-        )}
-        {project.featured && (
-          <span
-            className="font-body text-[10px] tracking-[0.15em] uppercase ml-auto"
-            style={{ color: 'var(--color-accent)' }}
-          >
-            ★ Featured
-          </span>
-        )}
-      </div>
-
-      {/* Title */}
-      <h2
-        className="font-display text-2xl md:text-3xl font-light mb-3 group-hover:text-[--color-accent] transition-colors duration-200"
-        style={{ color: 'var(--color-text-primary)' }}
-      >
-        {project.title}
-      </h2>
-
-      {/* Logline */}
-      {project.logline && (
-        <p
-          className="font-body text-base font-light italic leading-relaxed max-w-3xl"
-          style={{ color: 'var(--color-text-secondary)' }}
-        >
-          {project.logline}
-        </p>
-      )}
-
-      {/* Awards */}
-      {project.awards.length > 0 && (
-        <div className="flex flex-wrap gap-2 mt-4">
-          {project.awards.map(a => (
-            <span
-              key={a.id}
-              className="font-body text-[11px] tracking-wide px-3 py-1"
+      {/* Poster */}
+      <div className="relative overflow-hidden" style={{ background: 'var(--color-bg-warm-dark)' }}>
+        <div className="aspect-[2/3] relative overflow-hidden">
+          {project.posterUrl ? (
+            <img
+              src={project.posterUrl}
+              alt={project.title}
+              loading="lazy"
+              className="portfolio w-full h-full object-cover"
+            />
+          ) : (
+            <div
+              className="w-full h-full flex items-center justify-center font-display italic text-6xl"
               style={{
-                background: 'var(--color-accent-subtle)',
-                color: 'var(--color-accent)',
-                border: '1px solid var(--color-accent-light)',
+                background: 'linear-gradient(160deg, #004040, #008080 60%, #C9A9A6)',
+                color: 'rgba(255,255,255,0.15)',
               }}
             >
-              {a.name}{a.year ? ` · ${a.year}` : ''}
-            </span>
-          ))}
-        </div>
-      )}
+              {project.title.charAt(0)}
+            </div>
+          )}
 
-      {/* Actions */}
-      {project.scriptUrl && (
-        <div className="mt-4">
-          <a
-            href={project.scriptUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-body text-xs tracking-widest uppercase transition-colors duration-200"
-            style={{ color: 'var(--color-accent)', textDecoration: 'underline', textUnderlineOffset: '4px' }}
-          >
-            Read Script →
-          </a>
+          {/* Hover overlay — only shown when there's a script link */}
+          {linkUrl && (
+            <div
+              className="absolute inset-0 flex flex-col justify-end p-5 poster-overlay"
+              style={{ background: 'linear-gradient(to top, rgba(0,40,40,0.95) 0%, rgba(0,40,40,0) 60%)' }}
+            >
+              <div className="font-display text-xl font-semibold" style={{ color: 'var(--color-text-inverse)' }}>
+                {project.title}
+              </div>
+              {project.logline && (
+                <div className="font-display italic text-sm mt-1 mb-3 leading-snug"
+                  style={{ color: 'rgba(250,247,242,0.75)' }}>
+                  {project.logline}
+                </div>
+              )}
+              <div className="font-body text-xs tracking-widest uppercase"
+                style={{ color: 'var(--color-accent-light)' }}>
+                Read Script →
+              </div>
+            </div>
+          )}
         </div>
-      )}
-    </motion.article>
+      </div>
+
+      {/* Below poster */}
+      <div className="pt-3">
+        <div className="font-display text-lg font-semibold" style={{ color: 'var(--color-text-primary)' }}>
+          {project.title}
+        </div>
+
+        {/* Format + Genre row */}
+        <div className="flex flex-wrap items-center gap-2 mt-1 mb-2">
+          {project.format && (
+            <span
+              className="font-body text-[10px] tracking-[0.2em] uppercase px-2.5 py-1"
+              style={{ background: formatBg(project.format), color: 'rgba(250,247,242,0.95)' }}
+            >
+              {project.format}
+            </span>
+          )}
+          {project.genre && (
+            <span className="font-body text-[10px] tracking-[0.15em] uppercase"
+              style={{ color: 'var(--color-text-secondary)' }}>
+              {project.genre}
+            </span>
+          )}
+          {project.featured && (
+            <span className="font-body text-[10px] ml-auto" style={{ color: 'var(--color-accent)' }}>
+              ★ Featured
+            </span>
+          )}
+        </div>
+
+        {/* Award pills — name · festival · year */}
+        {project.awards.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {project.awards.map(a => (
+              <span
+                key={a.id}
+                className="font-body text-[10px] tracking-wide px-2 py-0.5"
+                style={{
+                  background: 'var(--color-accent-subtle)',
+                  color: 'var(--color-accent)',
+                  border: '1px solid var(--color-accent-light)',
+                }}
+              >
+                {a.name}
+                {a.category ? ` · ${a.category}` : ''}
+                {a.year ? ` · ${a.year}` : ''}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    </motion.div>
   );
+
+  if (linkUrl) {
+    return (
+      <a href={linkUrl} target="_blank" rel="noopener noreferrer" className="block no-underline">
+        {inner}
+      </a>
+    );
+  }
+  return inner;
 }
 
 // ── Filters ────────────────────────────────────────────────────────────────────
 const ALL = 'All';
-
 function getFormats(projects: WritingProject[]) {
   const seen = new Set<string>();
   projects.forEach(p => { if (p.format) seen.add(p.format); });
@@ -152,14 +172,7 @@ export default function Writing() {
   }, []);
 
   const formats = getFormats(projects);
-
-  const visible = filter === ALL
-    ? projects
-    : projects.filter(p => p.format === filter);
-
-  // Featured script(s) at top, rest below
-  const featured = visible.filter(p => p.featured);
-  const rest     = visible.filter(p => !p.featured);
+  const visible = filter === ALL ? projects : projects.filter(p => p.format === filter);
 
   return (
     <motion.main
@@ -167,33 +180,30 @@ export default function Writing() {
       animate={{ opacity: 1, transition: { duration: 0.4 } }}
       exit={{ opacity: 0, transition: { duration: 0.2 } }}
     >
+      <style>{`
+        .poster-overlay { transform: translateY(60%); transition: transform 300ms ease-out; }
+        .cursor-pointer:hover .poster-overlay { transform: translateY(0); }
+        .cursor-pointer:hover img.portfolio { filter: none; transform: scale(1.03); }
+        img.portfolio { transition: filter 400ms ease, transform 500ms ease; }
+      `}</style>
+
       {/* ── Header ──────────────────────────────────────────────────────────── */}
-      <section
-        className="pt-32 pb-20 px-6"
-        style={{ background: 'var(--color-bg-dark)' }}
-      >
+      <section className="pt-32 pb-20 px-6" style={{ background: 'var(--color-bg-dark)' }}>
         <div className="container mx-auto max-w-3xl">
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="eyebrow"
-            style={{ color: 'var(--color-accent-light)', opacity: 0.7 }}
+            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
+            className="eyebrow" style={{ color: 'var(--color-accent-light)', opacity: 0.7 }}
           >
             Writing Portfolio
           </motion.div>
           <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}
             className="font-display font-light text-5xl md:text-6xl text-[--color-text-inverse] mt-3 leading-tight"
           >
             Scripts &amp;<br />Original Work
           </motion.h1>
           <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
             className="font-body text-base font-light mt-6 leading-relaxed max-w-xl"
             style={{ color: 'rgba(250,247,242,0.7)' }}
           >
@@ -203,7 +213,7 @@ export default function Writing() {
         </div>
       </section>
 
-      {/* ── Filter pills ────────────────────────────────────────────────────── */}
+      {/* ── Format filter pills ──────────────────────────────────────────────── */}
       {!loading && formats.length > 2 && (
         <section
           className="py-6 px-6 sticky top-[64px] z-30"
@@ -228,71 +238,35 @@ export default function Writing() {
         </section>
       )}
 
-      {/* ── Script list ─────────────────────────────────────────────────────── */}
+      {/* ── Poster grid ──────────────────────────────────────────────────────── */}
       <section className="px-6 pb-24" style={{ background: 'var(--color-bg-cream)' }}>
-        <div className="container mx-auto max-w-4xl">
+        <div className="container mx-auto" style={{ padding: 'clamp(3rem,6vw,6rem) clamp(1.5rem,5vw,5rem)' }}>
 
           {loading && (
-            <div className="pt-8">
-              {Array.from({ length: 5 }).map((_, i) => <SkeletonRow key={i} />)}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
             </div>
           )}
 
           {!loading && error && (
-            <p className="pt-16 font-body text-sm text-center"
-               style={{ color: 'var(--color-text-muted)' }}>
-              {error}
-            </p>
+            <p className="font-body text-sm text-center" style={{ color: 'var(--color-text-muted)' }}>{error}</p>
           )}
 
           {!loading && !error && visible.length === 0 && (
-            <p className="pt-16 font-body text-sm text-center"
-               style={{ color: 'var(--color-text-muted)' }}>
+            <p className="font-body text-sm text-center" style={{ color: 'var(--color-text-muted)' }}>
               No scripts published yet — check back soon.
             </p>
           )}
 
-          {/* Featured */}
-          <AnimatePresence mode="wait">
-            {featured.length > 0 && (
-              <motion.div
-                key={`featured-${filter}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-              >
-                <div
-                  className="mt-10 mb-2 font-body text-[10px] tracking-[0.2em] uppercase"
-                  style={{ color: 'var(--color-accent)' }}
-                >
-                  Featured
-                </div>
-                {featured.map((p, i) => (
-                  <ScriptCard key={p.id} project={p} index={i} />
-                ))}
-                {rest.length > 0 && (
-                  <div
-                    className="mt-10 mb-2 font-body text-[10px] tracking-[0.2em] uppercase"
-                    style={{ color: 'var(--color-text-secondary)', opacity: 0.6 }}
-                  >
-                    More Work
-                  </div>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Rest */}
           <AnimatePresence mode="wait">
             <motion.div
-              key={`list-${filter}`}
+              key={filter}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
             >
-              {rest.map((p, i) => (
-                <ScriptCard key={p.id} project={p} index={featured.length + i} />
-              ))}
+              {visible.map(p => <PosterCard key={p.id} project={p} />)}
             </motion.div>
           </AnimatePresence>
         </div>
