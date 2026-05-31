@@ -94,7 +94,7 @@ export default function About() {
     >
       {/* ── Header ──────────────────────────────────────────────────────────── */}
       <section className="pt-32 pb-20 px-6" style={{ background: 'var(--color-bg-dark)' }}>
-        <div className="container mx-auto max-w-3xl">
+        <div className="container mx-auto max-w-4xl">
           <motion.div {...fadeUp(0)} className="eyebrow" style={{ color: 'rgba(250,247,248,0.55)' }}>
             About
           </motion.div>
@@ -120,7 +120,7 @@ export default function About() {
       {/* ── Pull quotes ─────────────────────────────────────────────────────── */}
       {pullQuotes.length > 0 && (
         <section className="py-16 px-6" style={{ background: 'var(--color-accent)' }}>
-          <div className="container mx-auto grid md:grid-cols-2 gap-10 max-w-4xl">
+          <div className="container mx-auto max-w-4xl grid md:grid-cols-2 gap-10">
             {pullQuotes.map(({ text, attr }, i) => (
               <motion.blockquote key={i} {...fadeUp(i * 0.15)} className="flex flex-col gap-4">
                 <span
@@ -147,9 +147,9 @@ export default function About() {
       {/* ── Selected credits ────────────────────────────────────────────────── */}
       {credits.length > 0 && (
         <section className="section px-6" style={{ background: 'var(--color-bg-cream)' }}>
-          <div className="container mx-auto">
+          <div className="container mx-auto max-w-4xl">
             <motion.div {...fadeUp(0)} className="eyebrow">Selected Credits</motion.div>
-            <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+            <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {credits.map(({ role, items }, ci) => (
                 <motion.div key={role} {...fadeUp(ci * 0.08)}>
                   <h3
@@ -190,11 +190,11 @@ export default function About() {
       {/* ── Awards ──────────────────────────────────────────────────────────── */}
       {recognition.length > 0 && (
         <section className="py-16 px-6" style={{ background: 'var(--color-bg-dark)' }}>
-          <div className="container mx-auto">
+          <div className="container mx-auto max-w-4xl">
             <motion.div {...fadeUp(0)} className="eyebrow" style={{ color: 'rgba(250,247,248,0.55)' }}>
               Recognition
             </motion.div>
-            <div className="mt-8 grid sm:grid-cols-3 gap-8 max-w-3xl">
+            <div className="mt-8 grid sm:grid-cols-3 gap-8">
               {recognition.map(({ title, body, year }, i) => (
                 <motion.div key={i} {...fadeUp(i * 0.1)} className="flex flex-col gap-2 pl-4"
                   style={{ borderLeft: '2px solid rgba(250,247,248,0.35)' }}>
@@ -216,7 +216,7 @@ export default function About() {
       {/* ── Education & Training ─────────────────────────────────────────────── */}
       {education.length > 0 && (
         <section className="section px-6" style={{ background: 'var(--color-bg-cream)' }}>
-          <div className="container mx-auto max-w-3xl">
+          <div className="container mx-auto max-w-4xl">
             <motion.div {...fadeUp(0)} className="eyebrow">Education &amp; Training</motion.div>
             <div className="mt-8 divide-y" style={{ borderColor: 'rgba(0,64,64,0.1)' }}>
               {education.map(({ school, course, year }, i) => (
