@@ -21,7 +21,7 @@ const SELECT = `
   description,
   sortOrder:sort_order,
   published,
-  samples:service_samples (
+  samples:service_samples!service_id (
     id,
     title,
     description,

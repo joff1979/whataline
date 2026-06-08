@@ -25,11 +25,11 @@ function PullQuote({ testimonial }: { testimonial: Testimonial }) {
       >
         &ldquo;
       </div>
-      <blockquote
-        className="font-display italic text-2xl leading-relaxed"
-        style={{ color: 'var(--color-text-secondary)', whiteSpace: 'pre-wrap' }}
-      >
-        {testimonial.quoteText}
+      <blockquote className="font-display italic text-2xl leading-relaxed space-y-4"
+        style={{ color: 'var(--color-text-secondary)' }}>
+        {testimonial.quoteText.split('\n').filter(Boolean).map((para, i) => (
+          <p key={i}>{para}</p>
+        ))}
       </blockquote>
       <div className="mt-6">
         <div className="font-body text-xs tracking-widest uppercase" style={{ color: 'var(--color-text-muted)' }}>

@@ -20,15 +20,23 @@ function SkeletonCard() {
 }
 
 function AwardPill({ award }: { award: import('../../api/types').Award }) {
-  const label = [award.name, award.category, award.year].filter(Boolean).join(' · ');
+  const festivalLine = [award.category, award.year].filter(Boolean).join(' · ');
+  const fullLabel = [award.name, award.category, award.year].filter(Boolean).join(' · ');
   if (award.laurelUrl) {
     return (
-      <img
-        src={award.laurelUrl}
-        alt={label}
-        title={label}
-        className="inline-block h-12 w-auto object-contain mr-2 mt-1 align-middle"
-      />
+      <span className="inline-flex flex-col items-center text-center mr-2 mt-1 gap-1">
+        <img
+          src={award.laurelUrl}
+          alt={fullLabel}
+          className="h-12 w-auto object-contain"
+        />
+        {festivalLine && (
+          <span className="font-body text-[9px] tracking-wide leading-tight max-w-[6rem]"
+            style={{ color: 'var(--color-text-muted)' }}>
+            {festivalLine}
+          </span>
+        )}
+      </span>
     );
   }
   return (
@@ -40,13 +48,14 @@ function AwardPill({ award }: { award: import('../../api/types').Award }) {
         border: '1px solid var(--color-accent-light)',
       }}
     >
-      {label}
+      {fullLabel}
     </span>
   );
 }
 
 function PosterCard({ project }: { project: FilmProject }) {
   const linkUrl = project.filmUrl || project.trailerUrl || null;
+  const [imgError, setImgError] = useState(false);
 
   const inner = (
     <motion.div
@@ -58,12 +67,13 @@ function PosterCard({ project }: { project: FilmProject }) {
     >
       <div className="relative overflow-hidden" style={{ background: 'var(--color-bg-warm-dark)' }}>
         <div className="aspect-[2/3] relative overflow-hidden">
-          {project.posterUrl ? (
+          {project.posterUrl && !imgError ? (
             <img
               src={project.posterUrl}
               alt={project.title}
               loading="lazy"
               className="portfolio w-full h-full object-cover"
+              onError={() => setImgError(true)}
             />
           ) : (
             <div
