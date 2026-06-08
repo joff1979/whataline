@@ -5,14 +5,14 @@ import { getAboutContent, type AboutContent } from '../api/about';
 import { getFeaturedLaurels } from '../api/laurels';
 import type { FeaturedLaurel } from '../api/types';
 
-// Behind-the-scenes gallery (optimised images live in /public/photos)
+// Behind-the-scenes gallery (images live in /public/photos)
 const galleryPhotos = [
-  { src: '/photos/bts-on-set.jpg',        caption: 'On set' },
+  { src: '/photos/bts-on-set-4.jpg',      caption: 'On set' },
+  { src: '/photos/bts-on-set-3.jpg',      caption: 'On location' },
+  { src: '/photos/bts-on-set-2.jpg',      caption: 'Behind the scenes' },
+  { src: '/photos/bts-on-set.jpg',        caption: 'Script supervision' },
   { src: '/photos/southend-festival.jpg', caption: 'Southend-on-Sea Film Festival' },
   { src: '/photos/bts-screening.jpg',     caption: 'Screening event' },
-  { src: '/photos/bts-on-set-4.jpg',      caption: 'In production' },
-  { src: '/photos/bts-on-set-2.jpg',      caption: 'Behind the scenes' },
-  { src: '/photos/bts-on-set-3.jpg',      caption: 'Directing' },
 ];
 
 const fadeUp = (delay = 0) => ({
@@ -109,8 +109,21 @@ export default function About() {
       {/* ── Header ──────────────────────────────────────────────────────────── */}
       <section className="pt-32 pb-20 px-6" style={{ background: 'var(--color-bg-dark)' }}>
         <div className="container mx-auto max-w-4xl">
-          <div className="grid md:grid-cols-[1fr_auto] gap-10 md:gap-12 items-start">
-            {/* Text column */}
+          <div className="grid md:grid-cols-[auto_1fr] gap-10 md:gap-14 items-start">
+            {/* Profile photo — left column */}
+            <motion.div
+              {...fadeUp(0.1)}
+              className="w-44 sm:w-52 md:w-60 flex-shrink-0 mx-auto md:mx-0"
+            >
+              <img
+                src="/photos/profile.jpg"
+                alt="Kat Rollinson"
+                className="w-full aspect-[3/4] object-cover"
+                style={{ border: '1px solid rgba(250,247,248,0.15)' }}
+              />
+            </motion.div>
+
+            {/* Text column — right */}
             <div>
               <motion.div {...fadeUp(0)} className="eyebrow" style={{ color: 'rgba(250,247,248,0.55)' }}>
                 About
@@ -121,32 +134,19 @@ export default function About() {
               >
                 Multi-hyphenate<br />filmmaker.
               </motion.h1>
+
+              {bioParagraphs.length > 0 && (
+                <motion.div {...fadeUp(0.25)} className="mt-6 space-y-4">
+                  {bioParagraphs.map((p, i) => (
+                    <p key={i} className="font-body text-base font-light leading-relaxed"
+                      style={{ color: 'rgba(250,247,242,0.8)' }}>
+                      {p}
+                    </p>
+                  ))}
+                </motion.div>
+              )}
             </div>
-
-            {/* Profile photo */}
-            <motion.div
-              {...fadeUp(0.2)}
-              className="w-40 sm:w-48 md:w-56 flex-shrink-0 mx-auto md:mx-0"
-            >
-              <img
-                src="/photos/profile.jpg"
-                alt="Kat Rollinson"
-                className="w-full aspect-[3/4] object-cover"
-                style={{ border: '1px solid rgba(250,247,248,0.15)' }}
-              />
-            </motion.div>
           </div>
-
-          {bioParagraphs.length > 0 && (
-            <motion.div {...fadeUp(0.3)} className="mt-10 space-y-5 max-w-2xl">
-              {bioParagraphs.map((p, i) => (
-                <p key={i} className="font-body text-base font-light leading-relaxed"
-                  style={{ color: 'rgba(250,247,242,0.8)' }}>
-                  {p}
-                </p>
-              ))}
-            </motion.div>
-          )}
         </div>
       </section>
 
@@ -227,7 +227,7 @@ export default function About() {
         <section className="py-16 px-6" style={{ background: 'var(--color-bg-dark)' }}>
           <div className="container mx-auto max-w-4xl">
             <motion.div {...fadeUp(0)} className="eyebrow" style={{ color: 'rgba(250,247,248,0.55)' }}>
-              Recognition
+              {laurels.length > 0 ? 'Awards & Laurels' : 'Recognition'}
             </motion.div>
 
             {laurels.length > 0 ? (
@@ -318,9 +318,9 @@ export default function About() {
       )}
 
       {/* ── Behind the scenes gallery ───────────────────────────────────────── */}
-      <section className="section px-6" style={{ background: 'var(--color-bg-elevated)' }}>
+      <section className="section px-6" style={{ background: 'var(--color-bg-dark)' }}>
         <div className="container mx-auto max-w-4xl">
-          <motion.div {...fadeUp(0)} className="eyebrow">Behind the Scenes</motion.div>
+          <motion.div {...fadeUp(0)} className="eyebrow" style={{ color: 'rgba(250,247,248,0.55)' }}>Behind the Scenes</motion.div>
           <div className="mt-10 grid grid-cols-2 md:grid-cols-3 gap-4">
             {galleryPhotos.map((photo, i) => (
               <motion.figure

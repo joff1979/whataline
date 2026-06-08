@@ -31,6 +31,7 @@ function SkeletonCard() {
 // ── Poster card ────────────────────────────────────────────────────────────────
 function PosterCard({ project }: { project: WritingProject }) {
   const linkUrl = project.scriptUrl ?? null;
+  const [imgError, setImgError] = useState(false);
 
   const inner = (
     <motion.div
@@ -43,12 +44,13 @@ function PosterCard({ project }: { project: WritingProject }) {
       {/* Poster */}
       <div className="relative overflow-hidden" style={{ background: 'var(--color-bg-warm-dark)' }}>
         <div className="aspect-[2/3] relative overflow-hidden">
-          {project.posterUrl ? (
+          {project.posterUrl && !imgError ? (
             <img
               src={project.posterUrl}
               alt={project.title}
               loading="lazy"
               className="portfolio w-full h-full object-cover"
+              onError={() => setImgError(true)}
             />
           ) : (
             <div
@@ -115,19 +117,26 @@ function PosterCard({ project }: { project: WritingProject }) {
           )}
         </div>
 
-        {/* Award laurels / pills — name · festival · year */}
+        {/* Award laurels / pills */}
         {project.awards.length > 0 && (
-          <div className="flex flex-wrap items-center gap-1">
+          <div className="flex flex-wrap items-end gap-2">
             {project.awards.map(a => {
-              const label = [a.name, a.category, a.year].filter(Boolean).join(' · ');
+              const festivalLine = [a.category, a.year].filter(Boolean).join(' · ');
+              const fullLabel = [a.name, a.category, a.year].filter(Boolean).join(' · ');
               return a.laurelUrl ? (
-                <img
-                  key={a.id}
-                  src={a.laurelUrl}
-                  alt={label}
-                  title={label}
-                  className="h-12 w-auto object-contain mr-1"
-                />
+                <span key={a.id} className="inline-flex flex-col items-center text-center gap-1">
+                  <img
+                    src={a.laurelUrl}
+                    alt={fullLabel}
+                    className="h-12 w-auto object-contain"
+                  />
+                  {festivalLine && (
+                    <span className="font-body text-[9px] tracking-wide leading-tight max-w-[6rem]"
+                      style={{ color: 'var(--color-text-muted)' }}>
+                      {festivalLine}
+                    </span>
+                  )}
+                </span>
               ) : (
                 <span
                   key={a.id}
@@ -138,7 +147,7 @@ function PosterCard({ project }: { project: WritingProject }) {
                     border: '1px solid var(--color-accent-light)',
                   }}
                 >
-                  {label}
+                  {fullLabel}
                 </span>
               );
             })}
