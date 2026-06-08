@@ -32,10 +32,12 @@ create table if not exists social_links (
 
 alter table social_links enable row level security;
 
+drop policy if exists "anon reads published socials" on social_links;
 create policy "anon reads published socials"
   on social_links for select to anon
   using (published = true);
 
+drop policy if exists "auth full access socials" on social_links;
 create policy "auth full access socials"
   on social_links for all to authenticated
   using (true) with check (true);
