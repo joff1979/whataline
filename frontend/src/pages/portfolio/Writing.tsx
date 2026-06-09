@@ -235,7 +235,7 @@ export default function Writing() {
       {!loading && formats.length > 2 && (
         <section
           className="py-6 px-6 sticky top-[64px] z-30"
-          style={{ background: 'rgba(250,247,242,0.95)', backdropFilter: 'blur(8px)', borderBottom: '1px solid rgba(0,64,64,0.08)' }}
+          style={{ background: 'rgba(250,247,242,0.95)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', borderBottom: '1px solid rgba(0,64,64,0.08)' }}
         >
           <div className="container mx-auto flex flex-wrap gap-2">
             {formats.map(f => (

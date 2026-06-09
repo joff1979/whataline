@@ -307,7 +307,7 @@ export default function Home() {
             >
               Selected films &amp; scripts
             </motion.h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 min-[360px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {showcase.map((item) => (
                 <ShowcaseCard key={`${item.kind}-${item.id}`} item={item} />
               ))}

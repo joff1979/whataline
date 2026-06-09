@@ -113,7 +113,7 @@ export default function About() {
             {/* Profile photo — left column */}
             <motion.div
               {...fadeUp(0.1)}
-              className="w-44 sm:w-52 md:w-60 flex-shrink-0 mx-auto md:mx-0"
+              className="w-44 sm:w-52 md:w-60 max-w-full flex-shrink-0 mx-auto md:mx-0"
             >
               <img
                 src="/photos/profile.jpg"
@@ -321,7 +321,7 @@ export default function About() {
       <section className="section px-6" style={{ background: 'var(--color-bg-dark)' }}>
         <div className="container mx-auto max-w-4xl">
           <motion.div {...fadeUp(0)} className="eyebrow" style={{ color: 'rgba(250,247,248,0.55)' }}>Behind the Scenes</motion.div>
-          <div className="mt-10 grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="mt-10 grid grid-cols-1 min-[360px]:grid-cols-2 md:grid-cols-3 gap-4">
             {galleryPhotos.map((photo, i) => (
               <motion.figure
                 key={photo.src}

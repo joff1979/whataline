@@ -104,6 +104,17 @@ img.portfolio:hover {
   flex-shrink: 0;
 }
 
+/* ── Narrow-screen padding relief (Z Flip cover screen ≤ 320 px) ───────────── */
+/* Sections nest a px-6 section + a .container, each carrying 1.5rem padding.  */
+/* At 260 px that stacks to 48 px/side → 164 px content. Halving the container  */
+/* padding below 320 px gives back ~20 px without changing any other breakpoint. */
+@media (max-width: 320px) {
+  .container {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+
 /* ── Prefers reduced motion ─────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
