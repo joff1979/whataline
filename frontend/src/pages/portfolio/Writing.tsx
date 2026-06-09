@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { getWritingProjects } from '../../api/writing';
 import type { WritingProject } from '../../api/types';
 
@@ -276,17 +276,9 @@ export default function Writing() {
             </p>
           )}
 
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={filter}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
-            >
-              {visible.map(p => <PosterCard key={p.id} project={p} />)}
-            </motion.div>
-          </AnimatePresence>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {visible.map(p => <PosterCard key={p.id} project={p} />)}
+          </div>
         </div>
       </section>
     </motion.main>

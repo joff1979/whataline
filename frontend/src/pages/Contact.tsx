@@ -72,7 +72,7 @@ export default function Contact() {
       </section>
 
       {/* ── Form ────────────────────────────────────────────────────────────── */}
-      <section className="section px-6" style={{ background: 'var(--color-bg-cream)' }}>
+      <section className="px-6 pt-16 pb-20" style={{ background: 'var(--color-bg-cream)' }}>
         <div className="container mx-auto max-w-2xl">
           <AnimatePresence mode="wait">
             {status === 'success' ? (
