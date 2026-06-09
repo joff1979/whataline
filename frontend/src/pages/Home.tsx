@@ -46,7 +46,7 @@ const quickLinks = [
 function ShowcaseCard({ item }: { item: ShowcaseItem }) {
   const inner = (
     <motion.div
-      className="cursor-pointer"
+      className="cursor-pointer group"
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -56,15 +56,17 @@ function ShowcaseCard({ item }: { item: ShowcaseItem }) {
         <div className="aspect-[2/3] relative overflow-hidden">
           {item.posterUrl ? (
             <img src={item.posterUrl} alt={item.title} loading="lazy"
-              className="portfolio w-full h-full object-cover" />
+              className="portfolio w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
           ) : (
             <div className="w-full h-full flex items-center justify-center font-display italic text-6xl"
               style={{ background: 'linear-gradient(160deg, #004040, #008080 60%, #C9A9A6)', color: 'rgba(255,255,255,0.15)' }}>
               {item.title.charAt(0)}
             </div>
           )}
-          <div className="absolute inset-0 flex flex-col justify-end p-5 home-poster-overlay"
-            style={{ background: 'linear-gradient(to top, rgba(0,40,40,0.95) 0%, rgba(0,40,40,0) 60%)' }}>
+          <div
+            className="absolute inset-0 flex flex-col justify-end p-5 translate-y-[60%] group-hover:translate-y-0 transition-transform duration-300 ease-out"
+            style={{ background: 'linear-gradient(to top, rgba(0,40,40,0.95) 0%, rgba(0,40,40,0) 60%)' }}
+          >
             <div className="font-display text-xl font-semibold" style={{ color: 'var(--color-text-inverse)' }}>
               {item.title}
             </div>
@@ -285,12 +287,6 @@ export default function Home() {
       {/* ── Featured work showcase ──────────────────────────────────────────── */}
       {showcase.length > 0 && (
         <section className="px-6 py-20" style={{ background: 'var(--color-bg-cream)' }}>
-          <style>{`
-            .home-poster-overlay { transform: translateY(60%); transition: transform 300ms ease-out; }
-            .cursor-pointer:hover .home-poster-overlay { transform: translateY(0); }
-            .cursor-pointer:hover img.portfolio { filter: none; transform: scale(1.03); }
-            img.portfolio { transition: filter 400ms ease, transform 500ms ease; }
-          `}</style>
           <div className="container mx-auto" style={{ maxWidth: '72rem' }}>
             <motion.div
               initial={{ opacity: 0, y: 16 }}

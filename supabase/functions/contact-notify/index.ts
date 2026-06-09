@@ -2,10 +2,10 @@
 // submits the contact form. Invoked from the frontend after the row is saved.
 //
 // Env vars (set in Supabase dashboard → Edge Functions → contact-notify):
-//   SMTP_HOST       e.g. smtp.zoho.eu  or  smtp.zoho.com
-//   SMTP_PORT       e.g. 587
+//   SMTP_HOST       smtp.zoho.eu  (EU accounts) or smtp.zoho.com
+//   SMTP_PORT       465  ← recommended (implicit TLS); 587 = STARTTLS also works
 //   SMTP_USERNAME   e.g. kat_writes@whataline.com
-//   SMTP_PASSWORD   Zoho app-specific password
+//   SMTP_PASSWORD   Zoho app-specific password (Settings → Security → App Passwords)
 //   EMAIL_FROM      e.g. kat_writes@whataline.com
 //   EMAIL_TO        e.g. kat_writes@whataline.com (where notifications land)
 
@@ -34,11 +34,13 @@ Deno.serve(async (req) => {
       ? `New message from ${payload.name}: ${payload.subject}`
       : `New message from ${payload.name}`;
 
+    const port = Number(Deno.env.get('SMTP_PORT') ?? 465);
     const client = new SMTPClient({
       connection: {
         hostname: Deno.env.get('SMTP_HOST')!,
-        port:     Number(Deno.env.get('SMTP_PORT') ?? 587),
-        tls:      true,
+        port,
+        // port 465 = implicit TLS (SSL); port 587 = STARTTLS (no immediate TLS)
+        tls: port !== 587,
         auth: {
           username: Deno.env.get('SMTP_USERNAME')!,
           password: Deno.env.get('SMTP_PASSWORD')!,

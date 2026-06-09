@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
+import { useEffect } from 'react';
 
 import Nav from './components/layout/Nav';
 import Footer from './components/layout/Footer';
@@ -28,6 +29,11 @@ import AdminSettings from './pages/admin/AdminSettings';
 function AnimatedRoutes() {
   const location = useLocation();
   const isAdmin = location.pathname.startsWith('/admin');
+
+  // Scroll to top on every route change so mobile nav links land at the page top
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   return (
     <>
