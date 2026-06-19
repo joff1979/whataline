@@ -51,7 +51,7 @@ export default function Nav() {
         className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
         style={
           scrolled || !hasDarkHero
-            ? { background: 'rgba(244,238,239,0.95)', backdropFilter: 'blur(8px)', borderBottom: '1px solid rgba(0,64,64,0.08)' }
+            ? { background: 'rgba(244,238,239,0.95)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', borderBottom: '1px solid rgba(0,64,64,0.08)' }
             : { background: 'transparent' }
         }
       >
