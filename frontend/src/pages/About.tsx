@@ -237,7 +237,7 @@ export default function About() {
                   return (
                     <motion.div key={l.id} {...fadeUp(i * 0.08)} className="flex flex-col items-center text-center gap-3">
                       {l.laurelUrl ? (
-                        <img src={l.laurelUrl} alt={l.name} className="h-24 w-auto object-contain" />
+                        <img src={l.laurelUrl} alt={l.name} className="h-24 w-auto object-contain invert" />
                       ) : (
                         <div className="flex flex-col gap-1 px-6 py-3"
                           style={{ border: '1px solid rgba(250,247,248,0.25)' }}>
