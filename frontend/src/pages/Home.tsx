@@ -64,7 +64,7 @@ function ShowcaseCard({ item }: { item: ShowcaseItem }) {
             </div>
           )}
           <div
-            className="absolute inset-0 flex flex-col justify-end p-5 translate-y-[60%] group-hover:translate-y-0 transition-transform duration-300 ease-out"
+            className="absolute inset-0 hidden md:flex flex-col justify-end p-5 md:translate-y-[60%] md:group-hover:translate-y-0 md:transition-transform md:duration-300 md:ease-out"
             style={{ background: 'linear-gradient(to top, rgba(0,40,40,0.95) 0%, rgba(0,40,40,0) 60%)' }}
           >
             <div className="font-display text-xl font-semibold" style={{ color: 'var(--color-text-inverse)' }}>
@@ -88,7 +88,7 @@ function ShowcaseCard({ item }: { item: ShowcaseItem }) {
           {item.title}
         </div>
         {(item.format || item.genre) && (
-          <div className="font-body text-xs mt-0.5" style={{ color: 'var(--color-text-muted)' }}>
+          <div className="font-body text-xs mt-0.5" style={{ color: 'var(--color-text-secondary)' }}>
             {[item.format, item.genre].filter(Boolean).join(' · ')}
           </div>
         )}
