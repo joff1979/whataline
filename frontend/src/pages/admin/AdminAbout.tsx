@@ -8,11 +8,11 @@ import {
 // ── Shared styles ─────────────────────────────────────────────────────────────
 
 const inputClass  = 'w-full border px-3 py-2 font-body text-sm outline-none rounded-none';
-const inputStyleyle  = { borderColor: 'var(--color-border-strong)', background: 'white' };
+const inputStyle  = { borderColor: 'var(--color-border-strong)', background: 'white' };
 const labelClass  = 'block font-body text-xs tracking-wide uppercase mb-1';
-const labelStyleyle  = { color: 'var(--color-text-muted)' };
+const labelStyle  = { color: 'var(--color-text-muted)' };
 const addBtnClass = 'font-body text-xs tracking-wide uppercase rounded-none px-3 py-1';
-const addBtnStyleyle = { color: 'var(--color-accent)', border: '1px solid var(--color-accent)' };
+const addBtnStyle = { color: 'var(--color-accent)', border: '1px solid var(--color-accent)' };
 const rmBtnClass  = 'font-body text-xs text-red-400 px-2 py-1 rounded-none flex-shrink-0';
 
 function SectionCard({ title, children }: { title: string; children: React.ReactNode }) {
