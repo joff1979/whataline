@@ -24,8 +24,28 @@ const cors = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
+// Best-effort in-memory rate limit: 3 submissions per IP per minute.
+// Works while the function instance is warm; resets on cold start (acceptable for a portfolio).
+const rl = new Map<string, { n: number; until: number }>();
+function rateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = rl.get(ip);
+  if (!entry || now > entry.until) { rl.set(ip, { n: 1, until: now + 60_000 }); return false; }
+  if (entry.n >= 3) return true;
+  entry.n++;
+  return false;
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors });
+
+  const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown';
+  if (rateLimited(ip)) {
+    return new Response(JSON.stringify({ ok: false, error: 'Too many requests — please wait a moment.' }), {
+      status: 429,
+      headers: { ...cors, 'Content-Type': 'application/json' },
+    });
+  }
 
   try {
     const payload = (await req.json()) as ContactPayload;

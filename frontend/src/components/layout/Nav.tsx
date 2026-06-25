@@ -47,6 +47,15 @@ export default function Nav() {
 
   return (
     <>
+      {/* Keyboard skip link — visually hidden until focused (WCAG 2.4.1) */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200] focus:px-4 focus:py-2 focus:font-body focus:text-sm focus:tracking-wide"
+        style={{ background: 'var(--color-accent)', color: 'white' }}
+      >
+        Skip to main content
+      </a>
+
       <header
         className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
         style={

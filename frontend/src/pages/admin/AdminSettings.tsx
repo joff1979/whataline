@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { changePassword } from '../../api/auth';
+import { useAuth } from '../../hooks/useAuth';
 
 type Status = 'idle' | 'saving' | 'success' | 'error';
 
@@ -10,6 +11,7 @@ const labelClass = 'block font-body text-[11px] tracking-[0.18em] uppercase mb-1
 const labelStyle = { color: 'var(--color-text-muted)' };
 
 export default function AdminSettings() {
+  const { session } = useAuth();
   const [current, setCurrent]   = useState('');
   const [next, setNext]         = useState('');
   const [confirm, setConfirm]   = useState('');
@@ -38,9 +40,7 @@ export default function AdminSettings() {
       setConfirm('');
     } catch (err: unknown) {
       setStatus('error');
-      const msg =
-        (err as { response?: { data?: { message?: string } } })
-          ?.response?.data?.message ?? 'Something went wrong. Please try again.';
+      const msg = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
       setErrorMsg(msg);
     }
   };
@@ -187,7 +187,10 @@ export default function AdminSettings() {
         <div className="flex items-center justify-between">
           <div>
             <p className="font-body text-sm" style={{ color: 'var(--color-text-inverse)' }}>
-              Signed in as <span style={{ color: 'var(--color-accent-light)' }}>kat</span>
+              Signed in as{' '}
+              <span style={{ color: 'var(--color-accent-light)' }}>
+                {session?.user.email ?? '…'}
+              </span>
             </p>
             <p className="font-body text-xs mt-0.5" style={{ color: 'var(--color-text-muted)' }}>
               Administrator

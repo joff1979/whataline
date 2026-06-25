@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { pageVariants } from '../lib/pageVariants';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { getAboutContent, type AboutContent } from '../api/about';
 import { getFeaturedLaurels } from '../api/laurels';
 import type { FeaturedLaurel } from '../api/types';
@@ -86,6 +87,7 @@ const FALLBACK: AboutContent = {
 };
 
 export default function About() {
+  usePageTitle('About');
   const [content, setContent] = useState<AboutContent>(FALLBACK);
   const [laurels, setLaurels] = useState<FeaturedLaurel[]>([]);
 
@@ -102,7 +104,7 @@ export default function About() {
   const { bioParagraphs, pullQuotes, credits, recognition, education } = content;
 
   return (
-    <motion.main variants={pageVariants} initial="initial" animate="animate" exit="exit">
+    <motion.main id="main-content" variants={pageVariants} initial="initial" animate="animate" exit="exit">
       {/* ── Header ──────────────────────────────────────────────────────────── */}
       <section className="pt-32 pb-20 px-6" style={{ background: 'var(--color-bg-dark)' }}>
         <div className="container mx-auto max-w-4xl">

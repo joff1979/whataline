@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { getServices } from '../../api/services';
 import type { Service } from '../../api/types';
 import { pageVariants } from '../../lib/pageVariants';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 function ServiceCard({ service }: { service: Service }) {
   const [samplesOpen, setSamplesOpen] = useState(false);
@@ -79,6 +80,7 @@ function ServiceCard({ service }: { service: Service }) {
 }
 
 export default function Services() {
+  usePageTitle('Services');
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -91,7 +93,7 @@ export default function Services() {
   }, []);
 
   return (
-    <motion.main variants={pageVariants} initial="initial" animate="animate" exit="exit" className="pt-24">
+    <motion.main id="main-content" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="pt-24">
       <div className="container mx-auto" style={{ padding: 'clamp(4rem,8vw,8rem) clamp(1.5rem,5vw,5rem)' }}>
         <div className="eyebrow">Services</div>
         <h1 className="font-display text-4xl mb-12" style={{ color: 'var(--color-text-primary)' }}>

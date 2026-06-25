@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { getWritingProjects } from '../../api/writing';
 import type { WritingProject } from '../../api/types';
 import { pageVariants } from '../../lib/pageVariants';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 // ── Format badge colour ────────────────────────────────────────────────────────
 const formatColour: Record<string, string> = {
@@ -178,6 +179,7 @@ function getFormats(projects: WritingProject[]) {
 
 // ── Page ───────────────────────────────────────────────────────────────────────
 export default function Writing() {
+  usePageTitle('Writing');
   const [projects, setProjects] = useState<WritingProject[]>([]);
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState<string | null>(null);
@@ -194,7 +196,7 @@ export default function Writing() {
   const visible = filter === ALL ? projects : projects.filter(p => p.format === filter);
 
   return (
-    <motion.main variants={pageVariants} initial="initial" animate="animate" exit="exit">
+    <motion.main id="main-content" variants={pageVariants} initial="initial" animate="animate" exit="exit">
 
       {/* ── Header ──────────────────────────────────────────────────────────── */}
       <section className="pt-32 pb-20 px-6" style={{ background: 'var(--color-bg-dark)' }}>
