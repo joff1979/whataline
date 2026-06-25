@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { getFeaturedShowcase } from '../api/showcase';
 import type { ShowcaseItem } from '../api/types';
 import { pageVariants } from '../lib/pageVariants';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 // ── YouTube IFrame API types ───────────────────────────────────────────────────
 declare global {
@@ -105,6 +106,7 @@ function ShowcaseCard({ item }: { item: ShowcaseItem }) {
 }
 
 export default function Home() {
+  usePageTitle();
   const playerRef = useRef<YTPlayer | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [showcase, setShowcase] = useState<ShowcaseItem[]>([]);
@@ -177,7 +179,7 @@ export default function Home() {
   }, []);
 
   return (
-    <motion.main variants={pageVariants} initial="initial" animate="animate" exit="exit">
+    <motion.main id="main-content" variants={pageVariants} initial="initial" animate="animate" exit="exit">
       {/* ── Video Hero ──────────────────────────────────────────────────────── */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden" style={{ background: 'var(--color-bg-dark)' }}>
 

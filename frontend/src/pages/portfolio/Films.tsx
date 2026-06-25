@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { getFilmProjects } from '../../api/films';
 import type { FilmProject } from '../../api/types';
 import { pageVariants } from '../../lib/pageVariants';
+import { usePageTitle } from '../../hooks/usePageTitle';
 
 function SkeletonCard() {
   return (
@@ -134,6 +135,7 @@ function PosterCard({ project }: { project: FilmProject }) {
 }
 
 export default function Films() {
+  usePageTitle('Films');
   const [projects, setProjects] = useState<FilmProject[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -146,7 +148,7 @@ export default function Films() {
   }, []);
 
   return (
-    <motion.main variants={pageVariants} initial="initial" animate="animate" exit="exit" className="pt-24">
+    <motion.main id="main-content" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="pt-24">
 
       <div className="container mx-auto" style={{ padding: 'clamp(4rem,8vw,8rem) clamp(1.5rem,5vw,5rem)' }}>
         <div className="eyebrow">Films</div>

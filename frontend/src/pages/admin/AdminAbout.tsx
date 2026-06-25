@@ -5,14 +5,25 @@ import {
   type PullQuote, type RecognitionItem, type EducationItem,
 } from '../../api/about';
 
+// ── Client-side draft types (stable keys for React; stripped before saving) ───
+type CreditItemDraft  = CreditItem & { _key: string };
+type CreditGroupDraft = Omit<CreditGroup, 'items'> & { _key: string; items: CreditItemDraft[] };
+type AboutContentDraft = Omit<AboutContent, 'credits'> & { credits: CreditGroupDraft[] };
+
+const withKeys = (gs: CreditGroup[]): CreditGroupDraft[] =>
+  gs.map(g => ({ ...g, _key: crypto.randomUUID(), items: g.items.map(it => ({ ...it, _key: crypto.randomUUID() })) }));
+
+const stripKeys = (gs: CreditGroupDraft[]): CreditGroup[] =>
+  gs.map(({ _key: _gk, items, ...rest }) => ({ ...rest, items: items.map(({ _key: _ik, ...it }) => it) }));
+
 // ── Shared styles ─────────────────────────────────────────────────────────────
 
 const inputClass  = 'w-full border px-3 py-2 font-body text-sm outline-none rounded-none';
-const inputStyleyle  = { borderColor: 'var(--color-border-strong)', background: 'white' };
+const inputStyle  = { borderColor: 'var(--color-border-strong)', background: 'white' };
 const labelClass  = 'block font-body text-xs tracking-wide uppercase mb-1';
-const labelStyleyle  = { color: 'var(--color-text-muted)' };
+const labelStyle  = { color: 'var(--color-text-muted)' };
 const addBtnClass = 'font-body text-xs tracking-wide uppercase rounded-none px-3 py-1';
-const addBtnStyleyle = { color: 'var(--color-accent)', border: '1px solid var(--color-accent)' };
+const addBtnStyle = { color: 'var(--color-accent)', border: '1px solid var(--color-accent)' };
 const rmBtnClass  = 'font-body text-xs text-red-400 px-2 py-1 rounded-none flex-shrink-0';
 
 function SectionCard({ title, children }: { title: string; children: React.ReactNode }) {
@@ -111,7 +122,7 @@ function PullQuotesEditor({
 
 function CreditsEditor({
   value, onChange,
-}: { value: CreditGroup[]; onChange: (v: CreditGroup[]) => void }) {
+}: { value: CreditGroupDraft[]; onChange: (v: CreditGroupDraft[]) => void }) {
   const [draggingGroup, setDraggingGroup] = useState<number | null>(null);
   const [draggingItem,  setDraggingItem]  = useState<{ gi: number; ii: number } | null>(null);
 
@@ -119,7 +130,7 @@ function CreditsEditor({
   const updateGroup = (i: number, g: CreditGroup) =>
     onChange(value.map((v, j) => j === i ? g : v));
   const removeGroup = (i: number) => onChange(value.filter((_, j) => j !== i));
-  const addGroup    = () => onChange([...value, { role: '', items: [] }]);
+  const addGroup    = () => onChange([...value, { role: '', items: [], _key: crypto.randomUUID() }]);
 
   const handleGroupDrop = (targetIdx: number) => {
     if (draggingGroup === null || draggingGroup === targetIdx) { setDraggingGroup(null); return; }
@@ -136,7 +147,7 @@ function CreditsEditor({
   const removeItem = (gi: number, ii: number) =>
     updateGroup(gi, { ...value[gi], items: value[gi].items.filter((_, j) => j !== ii) });
   const addItem    = (gi: number) =>
-    updateGroup(gi, { ...value[gi], items: [...value[gi].items, { title: '' }] });
+    updateGroup(gi, { ...value[gi], items: [...value[gi].items, { title: '', _key: crypto.randomUUID() }] });
 
   const handleItemDrop = (gi: number, targetIdx: number) => {
     if (!draggingItem || draggingItem.gi !== gi || draggingItem.ii === targetIdx) {
@@ -157,7 +168,7 @@ function CreditsEditor({
 
       {value.map((group, gi) => (
         <div
-          key={gi}
+          key={group._key}
           draggable
           onDragStart={(e) => { e.stopPropagation(); setDraggingGroup(gi); }}
           onDragOver={(e) => e.preventDefault()}
@@ -199,7 +210,7 @@ function CreditsEditor({
 
             {group.items.map((item, ii) => (
               <div
-                key={ii}
+                key={item._key}
                 draggable
                 onDragStart={(e) => { e.stopPropagation(); setDraggingItem({ gi, ii }); }}
                 onDragOver={(e) => e.preventDefault()}
@@ -296,7 +307,7 @@ function EducationEditor({
 // ── Main page ─────────────────────────────────────────────────────────────────
 
 export default function AdminAbout() {
-  const [content, setContent] = useState<AboutContent>({
+  const [content, setContent] = useState<AboutContentDraft>({
     bioParagraphs: [],
     pullQuotes: [],
     credits: [],
@@ -308,14 +319,16 @@ export default function AdminAbout() {
   const [saveMsg, setSaveMsg]   = useState<string | null>(null);
 
   useEffect(() => {
-    getAboutContent().then(setContent).finally(() => setLoading(false));
+    getAboutContent()
+      .then(data => setContent({ ...data, credits: withKeys(data.credits) }))
+      .finally(() => setLoading(false));
   }, []);
 
   const handleSave = async () => {
     setSaving(true);
     setSaveMsg(null);
     try {
-      await adminSaveAboutContent(content);
+      await adminSaveAboutContent({ ...content, credits: stripKeys(content.credits) });
       setSaveMsg('Saved ✓');
       setTimeout(() => setSaveMsg(null), 3000);
     } catch {
@@ -325,7 +338,7 @@ export default function AdminAbout() {
     }
   };
 
-  const update = <K extends keyof AboutContent>(key: K, val: AboutContent[K]) =>
+  const update = <K extends keyof AboutContentDraft>(key: K, val: AboutContentDraft[K]) =>
     setContent(c => ({ ...c, [key]: val }));
 
   if (loading) {

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { submitContact, type ContactRequest } from '../api/contact';
 import { pageVariants } from '../lib/pageVariants';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 20 },
@@ -15,6 +16,7 @@ const inputBase =
 type Status = 'idle' | 'sending' | 'success' | 'error';
 
 export default function Contact() {
+  usePageTitle('Contact');
   const [form, setForm] = useState<ContactRequest>({
     name: '', email: '', subject: '', message: '',
   });
@@ -40,7 +42,7 @@ export default function Contact() {
   };
 
   return (
-    <motion.main variants={pageVariants} initial="initial" animate="animate" exit="exit">
+    <motion.main id="main-content" variants={pageVariants} initial="initial" animate="animate" exit="exit">
       {/* ── Header ──────────────────────────────────────────────────────────── */}
       <section
         className="pt-32 pb-20 px-6"

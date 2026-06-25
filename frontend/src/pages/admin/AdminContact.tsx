@@ -11,12 +11,15 @@ function formatDate(iso: string) {
 export default function AdminContact() {
   const [items, setItems]     = useState<ContactSubmission[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState<string | null>(null);
   const [selected, setSelected] = useState<ContactSubmission | null>(null);
 
   const load = async () => {
     try {
       const data = await adminGetContacts();
       setItems(data);
+    } catch {
+      setError('Could not load messages. Check your connection and try refreshing.');
     } finally {
       setLoading(false);
     }
@@ -63,7 +66,11 @@ export default function AdminContact() {
         </p>
       )}
 
-      {!loading && items.length === 0 && (
+      {!loading && error && (
+        <p className="font-body text-sm" style={{ color: '#fca5a5' }}>{error}</p>
+      )}
+
+      {!loading && !error && items.length === 0 && (
         <div
           className="py-20 text-center font-body text-sm"
           style={{ color: 'var(--color-text-muted)' }}
@@ -72,7 +79,7 @@ export default function AdminContact() {
         </div>
       )}
 
-      {!loading && items.length > 0 && (
+      {!loading && !error && items.length > 0 && (
         <div className="grid lg:grid-cols-[320px_1fr] gap-4 h-[calc(100vh-140px)]">
 
           {/* Message list */}

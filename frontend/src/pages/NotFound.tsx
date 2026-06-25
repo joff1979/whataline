@@ -1,10 +1,13 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { pageVariants } from '../lib/pageVariants';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 export default function NotFound() {
+  usePageTitle('404');
   return (
     <motion.main
+      id="main-content"
       variants={pageVariants}
       initial="initial"
       animate="animate"

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { getTestimonials } from '../api/testimonials';
 import type { Testimonial } from '../api/types';
 import { pageVariants } from '../lib/pageVariants';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 function PullQuote({ testimonial }: { testimonial: Testimonial }) {
   return (
@@ -38,6 +39,7 @@ function PullQuote({ testimonial }: { testimonial: Testimonial }) {
 }
 
 export default function Testimonials() {
+  usePageTitle('Testimonials');
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -50,7 +52,7 @@ export default function Testimonials() {
   }, []);
 
   return (
-    <motion.main variants={pageVariants} initial="initial" animate="animate" exit="exit" className="pt-24">
+    <motion.main id="main-content" variants={pageVariants} initial="initial" animate="animate" exit="exit" className="pt-24">
       <div className="container mx-auto" style={{ padding: 'clamp(4rem,8vw,8rem) clamp(1.5rem,5vw,5rem)' }}>
         <div className="eyebrow">Testimonials</div>
         <h1 className="font-display text-4xl mb-16" style={{ color: 'var(--color-text-primary)' }}>

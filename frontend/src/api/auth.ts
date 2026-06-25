@@ -11,9 +11,17 @@ export async function logout(): Promise<void> {
 }
 
 
-export async function changePassword(_currentPassword: string, newPassword: string): Promise<void> {
-  // Supabase Auth doesn't require the current password to update —
-  // the session token authorises it. The arg is kept for the existing form UX.
+export async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  if (userError || !user?.email) throw new Error('Not authenticated');
+
+  // Re-authenticate to verify the current password before allowing the change
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email: user.email,
+    password: currentPassword,
+  });
+  if (signInError) throw new Error('Current password is incorrect.');
+
   const { error } = await supabase.auth.updateUser({ password: newPassword });
   if (error) throw error;
 }
