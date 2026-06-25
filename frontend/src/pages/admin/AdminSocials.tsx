@@ -9,9 +9,9 @@ import type { SocialLink } from '../../api/types';
 import SocialIcon, { KNOWN_PLATFORMS } from '../../components/ui/SocialIcon';
 
 const inputClass = 'w-full border px-3 py-2 font-body text-sm outline-none rounded-none';
-const inputStyleyle = { borderColor: 'var(--color-border-strong)', background: 'white' };
+const inputStyle = { borderColor: 'var(--color-border-strong)', background: 'white' };
 const labelClass = 'block font-body text-xs tracking-wide uppercase mb-1';
-const labelStyleyle = { color: 'var(--color-text-muted)' };
+const labelStyle = { color: 'var(--color-text-muted)' };
 
 interface RowProps {
   initial: UpsertSocialLink;
