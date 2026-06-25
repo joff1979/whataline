@@ -127,7 +127,7 @@ function CreditsEditor({
   const [draggingItem,  setDraggingItem]  = useState<{ gi: number; ii: number } | null>(null);
 
   // ── Group helpers ────────────────────────────────────────────────────────
-  const updateGroup = (i: number, g: CreditGroup) =>
+  const updateGroup = (i: number, g: CreditGroupDraft) =>
     onChange(value.map((v, j) => j === i ? g : v));
   const removeGroup = (i: number) => onChange(value.filter((_, j) => j !== i));
   const addGroup    = () => onChange([...value, { role: '', items: [], _key: crypto.randomUUID() }]);
@@ -142,7 +142,7 @@ function CreditsEditor({
   };
 
   // ── Item helpers ─────────────────────────────────────────────────────────
-  const updateItem = (gi: number, ii: number, item: CreditItem) =>
+  const updateItem = (gi: number, ii: number, item: CreditItemDraft) =>
     updateGroup(gi, { ...value[gi], items: value[gi].items.map((it, j) => j === ii ? item : it) });
   const removeItem = (gi: number, ii: number) =>
     updateGroup(gi, { ...value[gi], items: value[gi].items.filter((_, j) => j !== ii) });
