@@ -179,7 +179,7 @@ export default function About() {
 
       {/* ── Selected credits ────────────────────────────────────────────────── */}
       {credits.length > 0 && (
-        <section className="section px-6" style={{ background: 'var(--color-bg-cream)' }}>
+        <section className="py-16 px-6" style={{ background: 'var(--color-bg-cream)' }}>
           <div className="container mx-auto max-w-4xl">
             <motion.div {...fadeUp(0)} className="eyebrow">Selected Credits</motion.div>
             <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
