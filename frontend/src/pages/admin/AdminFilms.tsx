@@ -7,7 +7,7 @@ import {
   adminReorderFilmProjects,
   type UpsertFilmProject,
 } from '../../api/films';
-import { adminUpload } from '../../api/writing';
+import { adminUpload } from '../../api/storage';
 import AwardEditor from '../../components/admin/AwardEditor';
 import type { FilmProject } from '../../api/types';
 

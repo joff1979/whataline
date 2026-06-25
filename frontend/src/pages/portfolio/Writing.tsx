@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { getWritingProjects } from '../../api/writing';
 import type { WritingProject } from '../../api/types';
+import { pageVariants } from '../../lib/pageVariants';
 
 // ── Format badge colour ────────────────────────────────────────────────────────
 const formatColour: Record<string, string> = {
@@ -35,7 +36,7 @@ function PosterCard({ project }: { project: WritingProject }) {
 
   const inner = (
     <motion.div
-      className={linkUrl ? 'cursor-pointer' : ''}
+      className={linkUrl ? 'cursor-pointer group' : ''}
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -49,7 +50,7 @@ function PosterCard({ project }: { project: WritingProject }) {
               src={project.posterUrl}
               alt={project.title}
               loading="lazy"
-              className="portfolio w-full h-full object-cover"
+              className="portfolio w-full h-full object-cover md:transition-transform md:duration-500 md:group-hover:scale-[1.03]"
               onError={() => setImgError(true)}
             />
           ) : (
@@ -64,10 +65,10 @@ function PosterCard({ project }: { project: WritingProject }) {
             </div>
           )}
 
-          {/* Hover overlay — only shown when there's a script link */}
+          {/* Hover overlay — desktop only; hidden on mobile (no hover on touch) */}
           {linkUrl && (
             <div
-              className="absolute inset-0 flex flex-col justify-end p-5 poster-overlay"
+              className="absolute inset-0 hidden md:flex flex-col justify-end p-5 md:translate-y-[60%] md:group-hover:translate-y-0 md:transition-transform md:duration-300 md:ease-out"
               style={{ background: 'linear-gradient(to top, rgba(0,40,40,0.95) 0%, rgba(0,40,40,0) 60%)' }}
             >
               <div className="font-display text-xl font-semibold" style={{ color: 'var(--color-text-inverse)' }}>
@@ -193,17 +194,7 @@ export default function Writing() {
   const visible = filter === ALL ? projects : projects.filter(p => p.format === filter);
 
   return (
-    <motion.main
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1, transition: { duration: 0.4 } }}
-      exit={{ opacity: 0, transition: { duration: 0.2 } }}
-    >
-      <style>{`
-        .poster-overlay { transform: translateY(60%); transition: transform 300ms ease-out; }
-        .cursor-pointer:hover .poster-overlay { transform: translateY(0); }
-        .cursor-pointer:hover img.portfolio { filter: none; transform: scale(1.03); }
-        img.portfolio { transition: filter 400ms ease, transform 500ms ease; }
-      `}</style>
+    <motion.main variants={pageVariants} initial="initial" animate="animate" exit="exit">
 
       {/* ── Header ──────────────────────────────────────────────────────────── */}
       <section className="pt-32 pb-20 px-6" style={{ background: 'var(--color-bg-dark)' }}>

@@ -9,7 +9,7 @@ import {
   type UpsertServiceSample,
 } from '../../api/services';
 import type { Service } from '../../api/types';
-import { adminUpload } from '../../api/writing';
+import { adminUpload } from '../../api/storage';
 
 const emptyForm = (): UpsertService => ({
   title: '', description: '', sortOrder: 0, published: true, samples: [],

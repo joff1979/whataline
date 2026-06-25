@@ -1,13 +1,8 @@
 import { useState } from 'react';
-import { adminUpload } from '../../api/writing';
+import { adminUpload } from '../../api/storage';
+import type { AwardInput } from '../../api/types';
 
-export interface AwardInput {
-  name: string;
-  category: string | null;
-  year: number | null;
-  laurelUrl: string | null;
-  featured: boolean;
-}
+export type { AwardInput };
 
 interface Props {
   awards: AwardInput[];
