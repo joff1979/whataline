@@ -5,8 +5,8 @@ import {
   adminUpdateWritingProject,
   adminDeleteWritingProject,
   adminReorderWritingProjects,
-  adminUpload,
 } from '../../api/writing';
+import { adminUpload } from '../../api/storage';
 import AwardEditor from '../../components/admin/AwardEditor';
 import type { WritingProject, UpsertWritingProject } from '../../api/types';
 

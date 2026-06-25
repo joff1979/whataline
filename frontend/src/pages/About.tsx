@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { pageVariants } from '../lib/pageVariants';
 import { getAboutContent, type AboutContent } from '../api/about';
 import { getFeaturedLaurels } from '../api/laurels';
 import type { FeaturedLaurel } from '../api/types';
@@ -101,11 +102,7 @@ export default function About() {
   const { bioParagraphs, pullQuotes, credits, recognition, education } = content;
 
   return (
-    <motion.main
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1, transition: { duration: 0.4 } }}
-      exit={{ opacity: 0, transition: { duration: 0.2 } }}
-    >
+    <motion.main variants={pageVariants} initial="initial" animate="animate" exit="exit">
       {/* ── Header ──────────────────────────────────────────────────────────── */}
       <section className="pt-32 pb-20 px-6" style={{ background: 'var(--color-bg-dark)' }}>
         <div className="container mx-auto max-w-4xl">
@@ -289,7 +286,7 @@ export default function About() {
 
       {/* ── Education & Training ─────────────────────────────────────────────── */}
       {education.length > 0 && (
-        <section className="section px-6" style={{ background: 'var(--color-bg-cream)' }}>
+        <section className="py-16 px-6" style={{ background: 'var(--color-bg-cream)' }}>
           <div className="container mx-auto max-w-4xl">
             <motion.div {...fadeUp(0)} className="eyebrow">Education &amp; Training</motion.div>
             <div className="mt-8 divide-y" style={{ borderColor: 'rgba(0,64,64,0.1)' }}>
@@ -318,7 +315,7 @@ export default function About() {
       )}
 
       {/* ── Behind the scenes gallery ───────────────────────────────────────── */}
-      <section className="section px-6" style={{ background: 'var(--color-bg-dark)' }}>
+      <section className="py-16 px-6" style={{ background: 'var(--color-bg-dark)' }}>
         <div className="container mx-auto max-w-4xl">
           <motion.div {...fadeUp(0)} className="eyebrow" style={{ color: 'rgba(250,247,248,0.55)' }}>Behind the Scenes</motion.div>
           <div className="mt-10 grid grid-cols-1 min-[360px]:grid-cols-2 md:grid-cols-3 gap-4">

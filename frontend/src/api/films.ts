@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import type { FilmProject } from './types';
+import type { FilmProject, AwardInput } from './types';
 
 export interface UpsertFilmProject {
   title: string;
@@ -13,13 +13,7 @@ export interface UpsertFilmProject {
   status: 'draft' | 'published';
   featured: boolean;
   sortOrder: number;
-  awards: {
-    name: string;
-    category: string | null;
-    year: number | null;
-    laurelUrl: string | null;
-    featured: boolean;
-  }[];
+  awards: AwardInput[];
 }
 
 const SELECT = `

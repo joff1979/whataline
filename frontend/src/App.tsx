@@ -14,6 +14,7 @@ import Films from './pages/portfolio/Films';
 import Services from './pages/portfolio/Services';
 import Testimonials from './pages/Testimonials';
 import Contact from './pages/Contact';
+import NotFound from './pages/NotFound';
 
 import AdminLogin from './pages/admin/Login';
 import AdminWriting from './pages/admin/AdminWriting';
@@ -48,6 +49,7 @@ function AnimatedRoutes() {
           <Route path="/portfolio/services" element={<Services />} />
           <Route path="/testimonials" element={<Testimonials />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="*" element={<NotFound />} />
 
           {/* Admin auth */}
           <Route path="/admin/login" element={<AdminLogin />} />

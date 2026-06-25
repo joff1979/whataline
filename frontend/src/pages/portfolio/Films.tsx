@@ -2,12 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { getFilmProjects } from '../../api/films';
 import type { FilmProject } from '../../api/types';
-
-const pageVariants = {
-  initial: { opacity: 0 },
-  animate: { opacity: 1, transition: { duration: 0.4 } },
-  exit:    { opacity: 0, transition: { duration: 0.2 } },
-};
+import { pageVariants } from '../../lib/pageVariants';
 
 function SkeletonCard() {
   return (
@@ -59,7 +54,7 @@ function PosterCard({ project }: { project: FilmProject }) {
 
   const inner = (
     <motion.div
-      className={linkUrl ? 'cursor-pointer' : ''}
+      className={linkUrl ? 'cursor-pointer group' : ''}
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -72,7 +67,7 @@ function PosterCard({ project }: { project: FilmProject }) {
               src={project.posterUrl}
               alt={project.title}
               loading="lazy"
-              className="portfolio w-full h-full object-cover"
+              className="portfolio w-full h-full object-cover md:transition-transform md:duration-500 md:group-hover:scale-[1.03]"
               onError={() => setImgError(true)}
             />
           ) : (
@@ -89,7 +84,7 @@ function PosterCard({ project }: { project: FilmProject }) {
 
           {linkUrl && (
             <div
-              className="absolute inset-0 flex flex-col justify-end p-5 poster-overlay"
+              className="absolute inset-0 hidden md:flex flex-col justify-end p-5 md:translate-y-[60%] md:group-hover:translate-y-0 md:transition-transform md:duration-300 md:ease-out"
               style={{ background: 'linear-gradient(to top, rgba(0,64,64,0.95) 0%, rgba(0,64,64,0) 60%)' }}
             >
               <div className="font-display text-xl font-semibold" style={{ color: 'var(--color-text-inverse)' }}>
@@ -152,12 +147,6 @@ export default function Films() {
 
   return (
     <motion.main variants={pageVariants} initial="initial" animate="animate" exit="exit" className="pt-24">
-      <style>{`
-        .poster-overlay { transform: translateY(60%); transition: transform 300ms ease-out; }
-        .cursor-pointer:hover .poster-overlay { transform: translateY(0); }
-        .cursor-pointer:hover img.portfolio { filter: none; transform: scale(1.03); }
-        img.portfolio { transition: filter 400ms ease, transform 500ms ease; }
-      `}</style>
 
       <div className="container mx-auto" style={{ padding: 'clamp(4rem,8vw,8rem) clamp(1.5rem,5vw,5rem)' }}>
         <div className="eyebrow">Films</div>

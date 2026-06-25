@@ -7,13 +7,13 @@ import {
 
 // ── Shared styles ─────────────────────────────────────────────────────────────
 
-const inputCls  = 'w-full border px-3 py-2 font-body text-sm outline-none rounded-none';
-const inputSt   = { borderColor: 'var(--color-border-strong)', background: 'white' };
-const labelCls  = 'block font-body text-xs tracking-wide uppercase mb-1';
-const labelSt   = { color: 'var(--color-text-muted)' };
-const addBtnCls = 'font-body text-xs tracking-wide uppercase rounded-none px-3 py-1';
-const addBtnSt  = { color: 'var(--color-accent)', border: '1px solid var(--color-accent)' };
-const rmBtnCls  = 'font-body text-xs text-red-400 px-2 py-1 rounded-none flex-shrink-0';
+const inputClass  = 'w-full border px-3 py-2 font-body text-sm outline-none rounded-none';
+const inputStyle  = { borderColor: 'var(--color-border-strong)', background: 'white' };
+const labelClass  = 'block font-body text-xs tracking-wide uppercase mb-1';
+const labelStyle  = { color: 'var(--color-text-muted)' };
+const addBtnClass = 'font-body text-xs tracking-wide uppercase rounded-none px-3 py-1';
+const addBtnStyle = { color: 'var(--color-accent)', border: '1px solid var(--color-accent)' };
+const rmBtnClass  = 'font-body text-xs text-red-400 px-2 py-1 rounded-none flex-shrink-0';
 
 function SectionCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -49,13 +49,13 @@ function BioEditor({
             value={p}
             onChange={(e) => update(i, e.target.value)}
             rows={4}
-            className={`${inputCls} resize-none flex-1`}
-            style={inputSt}
+            className={`${inputClass} resize-none flex-1`}
+            style={inputStyle}
           />
-          <button type="button" onClick={() => remove(i)} className={rmBtnCls}>✕</button>
+          <button type="button" onClick={() => remove(i)} className={rmBtnClass}>✕</button>
         </div>
       ))}
-      <button type="button" onClick={add} className={addBtnCls} style={addBtnSt}>
+      <button type="button" onClick={add} className={addBtnClass} style={addBtnStyle}>
         + Add Paragraph
       </button>
     </SectionCard>
@@ -80,27 +80,27 @@ function PullQuotesEditor({
       {value.map((q, i) => (
         <div key={i} className="mb-4 p-4" style={{ background: 'rgba(0,64,64,0.04)', border: '1px solid var(--color-border-strong)' }}>
           <div className="flex items-start justify-between gap-2 mb-2">
-            <label className={labelCls} style={labelSt}>Quote</label>
-            <button type="button" onClick={() => remove(i)} className={rmBtnCls}>✕ Remove</button>
+            <label className={labelClass} style={labelStyle}>Quote</label>
+            <button type="button" onClick={() => remove(i)} className={rmBtnClass}>✕ Remove</button>
           </div>
           <textarea
             value={q.text}
             onChange={(e) => update(i, 'text', e.target.value)}
             rows={3}
-            className={`${inputCls} resize-none mb-3`}
-            style={inputSt}
+            className={`${inputClass} resize-none mb-3`}
+            style={inputStyle}
           />
-          <label className={labelCls} style={labelSt}>Attribution</label>
+          <label className={labelClass} style={labelStyle}>Attribution</label>
           <input
             value={q.attr}
             onChange={(e) => update(i, 'attr', e.target.value)}
             placeholder="e.g. Director, rocking horse media"
-            className={inputCls}
-            style={inputSt}
+            className={inputClass}
+            style={inputStyle}
           />
         </div>
       ))}
-      <button type="button" onClick={add} className={addBtnCls} style={addBtnSt}>
+      <button type="button" onClick={add} className={addBtnClass} style={addBtnStyle}>
         + Add Quote
       </button>
     </SectionCard>
@@ -179,7 +179,7 @@ function CreditsEditor({
               onChange={(e) => updateGroup(gi, { ...group, role: e.target.value })}
               placeholder="Role (e.g. Script Supervisor)"
               className="flex-1 border px-3 py-2 font-body text-sm font-medium outline-none rounded-none"
-              style={{ ...inputSt, borderColor: 'var(--color-accent)' }}
+              style={{ ...inputStyle, borderColor: 'var(--color-accent)' }}
             />
             <button type="button" onClick={() => removeGroup(gi)}
               className="font-body text-xs text-red-400 px-3 py-2 rounded-none border border-red-200 flex-shrink-0">
@@ -191,9 +191,9 @@ function CreditsEditor({
           <div className="ml-6">
             <div className="grid grid-cols-[1.5rem_1fr_1fr_5rem_auto] gap-2 mb-1">
               <span />
-              <span className={`${labelCls} !mb-0`} style={labelSt}>Title</span>
-              <span className={`${labelCls} !mb-0`} style={labelSt}>Company</span>
-              <span className={`${labelCls} !mb-0`} style={labelSt}>Year</span>
+              <span className={`${labelClass} !mb-0`} style={labelStyle}>Title</span>
+              <span className={`${labelClass} !mb-0`} style={labelStyle}>Company</span>
+              <span className={`${labelClass} !mb-0`} style={labelStyle}>Year</span>
               <span />
             </div>
 
@@ -210,23 +210,23 @@ function CreditsEditor({
               >
                 <span className="font-body text-sm text-center" style={{ color: 'var(--color-text-muted)', cursor: 'grab' }}>⠿</span>
                 <input value={item.title} onChange={(e) => updateItem(gi, ii, { ...item, title: e.target.value })}
-                  placeholder="Title" className={inputCls} style={inputSt} />
+                  placeholder="Title" className={inputClass} style={inputStyle} />
                 <input value={item.company ?? ''} onChange={(e) => updateItem(gi, ii, { ...item, company: e.target.value || undefined })}
-                  placeholder="Company (optional)" className={inputCls} style={inputSt} />
+                  placeholder="Company (optional)" className={inputClass} style={inputStyle} />
                 <input value={item.year ?? ''} onChange={(e) => updateItem(gi, ii, { ...item, year: e.target.value || undefined })}
-                  placeholder="Year" className={inputCls} style={inputSt} />
-                <button type="button" onClick={() => removeItem(gi, ii)} className={rmBtnCls}>✕</button>
+                  placeholder="Year" className={inputClass} style={inputStyle} />
+                <button type="button" onClick={() => removeItem(gi, ii)} className={rmBtnClass}>✕</button>
               </div>
             ))}
 
-            <button type="button" onClick={() => addItem(gi)} className={`${addBtnCls} mt-1`} style={addBtnSt}>
+            <button type="button" onClick={() => addItem(gi)} className={`${addBtnClass} mt-1`} style={addBtnStyle}>
               + Add Credit
             </button>
           </div>
         </div>
       ))}
 
-      <button type="button" onClick={addGroup} className={addBtnCls} style={addBtnSt}>
+      <button type="button" onClick={addGroup} className={addBtnClass} style={addBtnStyle}>
         + Add Role Group
       </button>
     </SectionCard>
@@ -248,15 +248,15 @@ function RecognitionEditor({
       {value.map((r, i) => (
         <div key={i} className="grid grid-cols-[6rem_1fr_5rem_auto] gap-2 items-center mb-2">
           <input value={r.title} onChange={(e) => update(i, 'title', e.target.value)}
-            placeholder="e.g. Award Winner" className={inputCls} style={inputSt} />
+            placeholder="e.g. Award Winner" className={inputClass} style={inputStyle} />
           <input value={r.body} onChange={(e) => update(i, 'body', e.target.value)}
-            placeholder="Festival / body" className={inputCls} style={inputSt} />
+            placeholder="Festival / body" className={inputClass} style={inputStyle} />
           <input value={r.year} onChange={(e) => update(i, 'year', e.target.value)}
-            placeholder="Year" className={inputCls} style={inputSt} />
-          <button type="button" onClick={() => remove(i)} className={rmBtnCls}>✕</button>
+            placeholder="Year" className={inputClass} style={inputStyle} />
+          <button type="button" onClick={() => remove(i)} className={rmBtnClass}>✕</button>
         </div>
       ))}
-      <button type="button" onClick={add} className={`${addBtnCls} mt-2`} style={addBtnSt}>
+      <button type="button" onClick={add} className={`${addBtnClass} mt-2`} style={addBtnStyle}>
         + Add Award
       </button>
     </SectionCard>
@@ -278,15 +278,15 @@ function EducationEditor({
       {value.map((e, i) => (
         <div key={i} className="grid grid-cols-[1fr_1fr_5rem_auto] gap-2 items-center mb-2">
           <input value={e.course} onChange={(ev) => update(i, 'course', ev.target.value)}
-            placeholder="Course / qualification" className={inputCls} style={inputSt} />
+            placeholder="Course / qualification" className={inputClass} style={inputStyle} />
           <input value={e.school} onChange={(ev) => update(i, 'school', ev.target.value)}
-            placeholder="School / provider" className={inputCls} style={inputSt} />
+            placeholder="School / provider" className={inputClass} style={inputStyle} />
           <input value={e.year} onChange={(ev) => update(i, 'year', ev.target.value)}
-            placeholder="Year" className={inputCls} style={inputSt} />
-          <button type="button" onClick={() => remove(i)} className={rmBtnCls}>✕</button>
+            placeholder="Year" className={inputClass} style={inputStyle} />
+          <button type="button" onClick={() => remove(i)} className={rmBtnClass}>✕</button>
         </div>
       ))}
-      <button type="button" onClick={add} className={`${addBtnCls} mt-2`} style={addBtnSt}>
+      <button type="button" onClick={add} className={`${addBtnClass} mt-2`} style={addBtnStyle}>
         + Add Course
       </button>
     </SectionCard>

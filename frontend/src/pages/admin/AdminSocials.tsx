@@ -4,14 +4,14 @@ import {
   adminUpdateSocialLink, adminDeleteSocialLink,
   type UpsertSocialLink,
 } from '../../api/socials';
-import { adminUpload } from '../../api/writing';
+import { adminUpload } from '../../api/storage';
 import type { SocialLink } from '../../api/types';
 import SocialIcon, { KNOWN_PLATFORMS } from '../../components/ui/SocialIcon';
 
-const inputCls = 'w-full border px-3 py-2 font-body text-sm outline-none rounded-none';
-const inputSt  = { borderColor: 'var(--color-border-strong)', background: 'white' };
-const labelCls = 'block font-body text-xs tracking-wide uppercase mb-1';
-const labelSt  = { color: 'var(--color-text-muted)' };
+const inputClass = 'w-full border px-3 py-2 font-body text-sm outline-none rounded-none';
+const inputStyle = { borderColor: 'var(--color-border-strong)', background: 'white' };
+const labelClass = 'block font-body text-xs tracking-wide uppercase mb-1';
+const labelStyle = { color: 'var(--color-text-muted)' };
 
 interface RowProps {
   initial: UpsertSocialLink;
@@ -56,14 +56,14 @@ function SocialForm({ initial, isNew, onSave, onCancel, onDelete }: RowProps) {
       <div className="grid sm:grid-cols-[10rem_1fr] gap-3">
         {/* Platform */}
         <div>
-          <label className={labelCls} style={labelSt}>Platform</label>
+          <label className={labelClass} style={labelStyle}>Platform</label>
           <input
             list="known-platforms"
             value={form.platform}
             onChange={(e) => set('platform', e.target.value)}
             placeholder="linkedin, imdb…"
-            className={inputCls}
-            style={inputSt}
+            className={inputClass}
+            style={inputStyle}
           />
           <datalist id="known-platforms">
             {KNOWN_PLATFORMS.map((p) => <option key={p} value={p} />)}
@@ -72,13 +72,13 @@ function SocialForm({ initial, isNew, onSave, onCancel, onDelete }: RowProps) {
 
         {/* URL */}
         <div>
-          <label className={labelCls} style={labelSt}>URL</label>
+          <label className={labelClass} style={labelStyle}>URL</label>
           <input
             value={form.url}
             onChange={(e) => set('url', e.target.value)}
             placeholder="https://…"
-            className={inputCls}
-            style={inputSt}
+            className={inputClass}
+            style={inputStyle}
           />
         </div>
       </div>
@@ -86,13 +86,13 @@ function SocialForm({ initial, isNew, onSave, onCancel, onDelete }: RowProps) {
       <div className="grid sm:grid-cols-[10rem_1fr] gap-3 mt-3 items-end">
         {/* Label */}
         <div>
-          <label className={labelCls} style={labelSt}>Label (optional)</label>
+          <label className={labelClass} style={labelStyle}>Label (optional)</label>
           <input
             value={form.label ?? ''}
             onChange={(e) => set('label', e.target.value || null)}
             placeholder="LinkedIn"
-            className={inputCls}
-            style={inputSt}
+            className={inputClass}
+            style={inputStyle}
           />
         </div>
 

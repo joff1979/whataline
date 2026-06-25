@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { submitContact, type ContactRequest } from '../api/contact';
+import { pageVariants } from '../lib/pageVariants';
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 20 },
@@ -39,11 +40,7 @@ export default function Contact() {
   };
 
   return (
-    <motion.main
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1, transition: { duration: 0.4 } }}
-      exit={{ opacity: 0, transition: { duration: 0.2 } }}
-    >
+    <motion.main variants={pageVariants} initial="initial" animate="animate" exit="exit">
       {/* ── Header ──────────────────────────────────────────────────────────── */}
       <section
         className="pt-32 pb-20 px-6"

@@ -7,6 +7,8 @@ export interface Award {
   featured: boolean;
 }
 
+export type AwardInput = Omit<Award, 'id'>;
+
 export interface SocialLink {
   id: number;
   platform: string;
@@ -107,5 +109,5 @@ export interface UpsertWritingProject {
   status: 'draft' | 'published';
   featured: boolean;
   sortOrder: number;
-  awards: Omit<Award, 'id'>[];
+  awards: AwardInput[];
 }

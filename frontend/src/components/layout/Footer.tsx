@@ -45,10 +45,7 @@ export default function Footer() {
               <Link
                 key={to}
                 to={to}
-                className="font-body text-xs tracking-[0.18em] uppercase transition-colors duration-200"
-                style={{ color: 'rgba(250,247,248,0.7)' }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-accent-light)')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(250,247,248,0.7)')}
+                className="font-body text-xs tracking-[0.18em] uppercase transition-colors duration-200 text-[rgba(250,247,248,0.7)] hover:text-[--color-accent-light]"
               >
                 {label}
               </Link>
@@ -70,10 +67,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={s.label ?? s.platform}
-                  className="transition-colors duration-200"
-                  style={{ color: 'rgba(250,247,248,0.75)' }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-accent-light)')}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(250,247,248,0.75)')}
+                  className="transition-colors duration-200 text-[rgba(250,247,248,0.75)] hover:text-[--color-accent-light]"
                 >
                   {s.iconUrl ? (
                     <img src={s.iconUrl} alt={s.label ?? s.platform} className="w-5 h-5 object-contain"
