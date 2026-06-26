@@ -70,8 +70,7 @@ export default function Footer() {
                   className="transition-colors duration-200 text-[rgba(250,247,248,0.75)] hover:text-[--color-accent-light]"
                 >
                   {s.iconUrl ? (
-                    <img src={s.iconUrl} alt={s.label ?? s.platform} className="w-5 h-5 object-contain"
-                      style={{ filter: 'brightness(0) invert(1)', opacity: 0.85 }} />
+                    <img src={s.iconUrl} alt={s.label ?? s.platform} className="w-5 h-5 object-contain" />
                   ) : (
                     <SocialIcon platform={s.platform} size={20} />
                   )}
