@@ -1,5 +1,5 @@
 import { assert, assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
-import { handleContactSubmit, type ContactSubmitDeps } from './index.ts';
+import { handleContactSubmit, quoteDisplayName, type ContactSubmitDeps } from './index.ts';
 import { signToken } from '../_shared/formToken.ts';
 
 const SECRET = 'test-form-token-secret';
@@ -130,6 +130,23 @@ Deno.test('CR/LF injection in name is stripped before it reaches the email send'
   // an attacker cannot fold in an extra header line (e.g. "Bcc: ...").
   assertEquals(/[\r\n]/.test(emails[0].name), false);
   assertEquals(emails[0].name, 'EvilBcc: attacker@example.com');
+});
+
+// A name crafted to look like a second, well-formed mailbox
+// ("Foo <a@evil.com>, Bar") must not let an attacker inject a second
+// Reply-To recipient. Quoting the display name is what stops this — the
+// receiving mail client sees a single quoted-string, not an address list.
+Deno.test('quoteDisplayName neutralises Reply-To address-list injection', () => {
+  const malicious = 'Legit Name <attacker@evil.com>, Real';
+  const quoted = quoteDisplayName(malicious);
+
+  // Must be a single RFC 5322 quoted-string wrapping the whole value.
+  assertEquals(quoted, '"Legit Name <attacker@evil.com>, Real"');
+  assertEquals(quoted.startsWith('"') && quoted.endsWith('"'), true);
+
+  // Embedded quotes/backslashes must be escaped so they can't terminate the
+  // quoted-string early and re-open address-list parsing.
+  assertEquals(quoteDisplayName('Say "hi" \\ bye'), '"Say \\"hi\\" \\\\ bye"');
 });
 
 // Spec acceptance case 7: a replayed token is accepted once and silently
