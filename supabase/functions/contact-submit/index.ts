@@ -222,7 +222,12 @@ export async function handleContactSubmit(req: Request, deps: ContactSubmitDeps)
   return json({ ok: true, message: 'Thank you — your message has been received.' }, 200);
 }
 
-Deno.serve((req) => handleContactSubmit(req, defaultDeps()));
+// Only start the server when this module is the entry point (Supabase's
+// runtime invokes it directly) — not when imported by index.test.ts, which
+// would otherwise try to bind a real port during `deno test`.
+if (import.meta.main) {
+  Deno.serve((req) => handleContactSubmit(req, defaultDeps()));
+}
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
