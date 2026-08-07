@@ -80,7 +80,7 @@ Deno.test('dwell time under 2.5s scores +40', () => {
 });
 
 Deno.test('emailDotCount counts dots in the local part only', () => {
-  assertEquals(emailDotCount('k.ige.gu.r.a.v.i.f9.0.8@gmail.com'), 8);
+  assertEquals(emailDotCount('k.ige.gu.r.a.v.i.f9.0.8@gmail.com'), 9);
   assertEquals(emailDotCount('jamie.rollinson@example.com'), 1);
   assertEquals(emailDotCount('nodotshere@example.com'), 0);
 });

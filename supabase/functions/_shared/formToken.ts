@@ -81,8 +81,12 @@ function timingSafeEqual(a: Uint8Array, b: Uint8Array): boolean {
   return diff === 0;
 }
 
-function strToBytes(s: string): Uint8Array {
-  return new TextEncoder().encode(s);
+function strToBytes(s: string): Uint8Array<ArrayBuffer> {
+  // TextEncoder.encode() types its result as Uint8Array<ArrayBufferLike>,
+  // which newer TS DOM lib defs don't accept where BufferSource (bound to
+  // a concrete ArrayBuffer) is expected, e.g. crypto.subtle.importKey/sign.
+  // Copying through the Uint8Array constructor narrows the buffer type.
+  return new Uint8Array(new TextEncoder().encode(s));
 }
 
 function bytesToStr(b: Uint8Array): string {
