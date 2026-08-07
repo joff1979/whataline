@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { submitContact, type ContactRequest } from '../api/contact';
+import { submitContact, fetchFormToken, type ContactRequest } from '../api/contact';
 import { pageVariants } from '../lib/pageVariants';
 
 const fadeUp = (delay = 0) => ({
@@ -20,6 +20,22 @@ export default function Contact() {
   });
   const [status, setStatus] = useState<Status>('idle');
   const [errorMsg, setErrorMsg] = useState('');
+  const [companyWebsite, setCompanyWebsite] = useState(''); // honeypot — must stay empty
+
+  const mountedAt = useRef(Date.now());
+  const tokenRef = useRef<string | null>(null);
+
+  // Fetch the submission token once on mount — by the time a human fills in
+  // and submits the form this has been sitting in memory for a while, so it
+  // adds no perceptible latency. Retry once in the background in case the
+  // first attempt hit a transient network blip.
+  useEffect(() => {
+    let cancelled = false;
+    const load = () => fetchFormToken().then(t => { if (!cancelled) tokenRef.current = t; }).catch(() => {});
+    load();
+    const retry = setTimeout(() => { if (!cancelled && !tokenRef.current) load(); }, 2000);
+    return () => { cancelled = true; clearTimeout(retry); };
+  }, []);
 
   const set = (field: keyof ContactRequest) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -30,7 +46,14 @@ export default function Contact() {
     setStatus('sending');
     setErrorMsg('');
     try {
-      await submitContact(form);
+      // Last-chance fetch if the mount-time request hasn't resolved yet.
+      const token = tokenRef.current ?? await fetchFormToken().catch(() => '');
+      await submitContact({
+        ...form,
+        companyWebsite,
+        dwellMs: Date.now() - mountedAt.current,
+        token,
+      });
       setStatus('success');
       setForm({ name: '', email: '', subject: '', message: '' });
     } catch {
@@ -113,6 +136,21 @@ export default function Contact() {
                 animate={{ opacity: 1 }}
                 className="space-y-6"
               >
+                {/* Honeypot — invisible to humans, catches bots that fill every field */}
+                <div
+                  style={{ position: 'absolute', left: '-9999px', top: 'auto', width: 1, height: 1, overflow: 'hidden' }}
+                  aria-hidden="true"
+                >
+                  <input
+                    type="text"
+                    name="company_website"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={companyWebsite}
+                    onChange={e => setCompanyWebsite(e.target.value)}
+                  />
+                </div>
+
                 {/* Name + Email row */}
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div className="flex flex-col gap-2">
