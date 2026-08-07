@@ -39,9 +39,12 @@ Both go into Vercel env vars in step 3 below.
 
 ---
 
-## 2. Set up the Edge Function for contact-form email
+## 2. Set up the Edge Functions for the contact form
 
-The frontend writes the contact submission to the DB, then calls a Supabase Edge Function which sends the notification email via Zoho SMTP.
+The contact form posts to `contact-submit`, a Supabase Edge Function that validates the
+submission, scores it for spam, persists it (service role, bypasses RLS), and — for
+anything not classified as spam — sends the notification email via Zoho SMTP.
+`contact-token` mints the short-lived replay-protection token the form fetches on load.
 
 ### 2a. Install the Supabase CLI (one-off)
 
@@ -60,17 +63,22 @@ supabase link --project-ref <your-project-ref>
 
 Project ref = the `abcdefgh` part of your project URL.
 
-### 2c. Deploy the function
+### 2c. Deploy the functions
 
 ```powershell
-supabase functions deploy contact-notify --no-verify-jwt
+supabase functions deploy contact-submit --no-verify-jwt
+supabase functions deploy contact-token --no-verify-jwt
 ```
 
-`--no-verify-jwt` because we want the public contact form to invoke it without an auth header.
+`--no-verify-jwt` because we want the public contact form to invoke them without an auth
+header — the security boundary is the validation/scoring logic inside, not Supabase's JWT
+check. `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are injected automatically; don't set
+them yourself.
 
-### 2d. Set the SMTP secrets
+### 2d. Set the secrets
 
-In the Supabase dashboard → **Edge Functions** → `contact-notify` → **Secrets**:
+In the Supabase dashboard → **Edge Functions** → `contact-submit` → **Secrets** (shared
+across both functions):
 
 | Key | Value |
 |---|---|
@@ -80,8 +88,12 @@ In the Supabase dashboard → **Edge Functions** → `contact-notify` → **Secr
 | `SMTP_PASSWORD` | Zoho **app-specific password** (Zoho Mail → Settings → Security → App passwords) |
 | `EMAIL_FROM` | `kat_writes@whataline.com` |
 | `EMAIL_TO` | `kat_writes@whataline.com` |
+| `IP_HASH_SALT` | Random 32-byte hex string — salts the IP hash used for rate limiting. Never store raw IPs. |
+| `FORM_TOKEN_SECRET` | Random 32-byte hex string — HMAC secret for the replay-protection token, shared between `contact-submit` and `contact-token` |
+| `ALLOWED_REFERER_HOSTS` | `whataline.com,www.whataline.com` (add any Vercel preview host you test against) |
 
-Don't put the actual Zoho login password — generate an app password.
+Don't put the actual Zoho login password — generate an app password. Generate the two
+random secrets with e.g. `openssl rand -hex 32`.
 
 ---
 
@@ -167,8 +179,8 @@ Done. From this point on you're on free Vercel + free Supabase, $0/month.
 
 - **Push to `main`** → Vercel auto-deploys to whataline.com
 - **Push to any other branch** → Vercel gives you a unique preview URL (great for feedback rounds)
-- **Edit the schema** → run new SQL in Supabase SQL Editor (or use `supabase db push` once you start tracking migrations)
-- **Update an Edge Function** → `supabase functions deploy contact-notify`
+- **Edit the schema** → run new SQL in Supabase SQL Editor (files in `supabase/migrations/` are applied manually, in order, on top of `supabase/schema.sql`; there's no automatic migration tracking yet)
+- **Update an Edge Function** → `supabase functions deploy contact-submit` (or `contact-token`)
 
 ## When you outgrow Free tier
 
