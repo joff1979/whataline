@@ -42,7 +42,10 @@ interface ContactPayload {
   token?: string;
 }
 
-const EMAIL_RE = /^[^\s<>,"']+@[^\s<>,"']+\.[^\s<>,"']+$/;
+// Excludes <>,"' (address-list/quoting structure) and ?&= (URI query
+// structure — a submitted email is later rendered in unencoded mailto:
+// links in the admin panel, so these can't be allowed through here either).
+const EMAIL_RE = /^[^\s<>,"'?&=]+@[^\s<>,"'?&=]+\.[^\s<>,"'?&=]+$/;
 
 // Minimal shape of the pieces of supabase-js this handler touches — lets
 // tests inject a lightweight fake instead of a live Supabase connection.
@@ -239,6 +242,15 @@ function stripHeaderChars(s: string): string {
   return s.replace(/[\r\n\0]/g, '');
 }
 
+// Wraps a display name as an RFC 5322 quoted-string, escaping the two
+// characters quoted-strings use for escaping. Inside a quoted-string,
+// <, >, and , are literal — they can't be parsed as address-list structure,
+// which is what stops a name like `Foo <a@evil.com>, Bar` from injecting a
+// second Reply-To recipient.
+export function quoteDisplayName(s: string): string {
+  return `"${s.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
+}
+
 function clientIp(req: Request): string {
   const xff = req.headers.get('x-forwarded-for');
   if (xff) return xff.split(',')[0].trim();
@@ -271,7 +283,7 @@ async function sendNotification(p: { name: string; email: string; subject: strin
   await client.send({
     from: Deno.env.get('EMAIL_FROM')!,
     to: Deno.env.get('EMAIL_TO')!,
-    replyTo: `${p.name} <${p.email}>`,
+    replyTo: `${quoteDisplayName(p.name)} <${p.email}>`,
     subject,
     content: 'auto',
     html: buildHtml(p),

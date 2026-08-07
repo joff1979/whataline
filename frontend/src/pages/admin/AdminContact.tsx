@@ -147,7 +147,7 @@ export default function AdminContact() {
                     <p className="font-body text-sm" style={{ color: 'var(--color-text-muted)' }}>
                       From{' '}
                       <a
-                        href={`mailto:${selected.email}`}
+                        href={`mailto:${encodeURIComponent(selected.email)}`}
                         className="underline underline-offset-2"
                         style={{ color: 'var(--color-accent-light)' }}
                       >
@@ -155,7 +155,7 @@ export default function AdminContact() {
                       </a>
                       {' '}·{' '}
                       <a
-                        href={`mailto:${selected.email}`}
+                        href={`mailto:${encodeURIComponent(selected.email)}`}
                         className="underline underline-offset-2"
                         style={{ color: 'var(--color-accent-light)' }}
                       >
